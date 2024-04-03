@@ -4,7 +4,8 @@ repos:
     hooks:
       - id: flake8
         additional_dependencies: [flake8]
-        files: ^finance-backend/app/  # Да, имеенно с апострофом, чтобы прогонялся весь код в app
+        files: ^finance-backend/  # Да, имеенно с апострофом, чтобы прогонялся весь код в app
+        types: [file, python]
 
   # - repo: local
   #   hooks:
