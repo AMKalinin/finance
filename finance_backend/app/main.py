@@ -10,7 +10,7 @@ app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 origins = [
-    "*"
+    "*" 
 ]
 
 app.add_middleware(
@@ -21,3 +21,7 @@ app.add_middleware(
     allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
                    "Authorization"],
 )
+
+
+
+
