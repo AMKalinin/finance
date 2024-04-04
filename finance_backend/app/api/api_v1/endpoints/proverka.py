@@ -8,5 +8,5 @@ def get_test(test: str):
     return {test}
 
 
-def fjsdkfjkasodfjosjdfkjksdjfklasdfmdmflsmdfklsdmfklasmdkflsmdkflamsdkflczvaeoriqoituwemvcfkkk():
+def test():
     pass
