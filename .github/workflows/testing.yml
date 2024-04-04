@@ -1,0 +1,16 @@
+name: Test
+on:
+  push:
+    branches:
+          - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get repository code
+        uses: actions/checkout@v3
+        run: cd finance_backend
+      - name: install deps
+        run: poetry insatll
+      - name: test
+        run: poetry run pytest
