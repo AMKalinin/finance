@@ -10,7 +10,7 @@ jobs:
       - name: Get repository code
         uses: actions/checkout@v3
       - name: Change Directory
-        run: cd finance_backend
+        run: ls -la
       - name: install deps
         run: poetry insatll
       - name: test
