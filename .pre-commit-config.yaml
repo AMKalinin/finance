@@ -36,5 +36,5 @@ repos:
         language: system
         # pass_filenames: false
         types: [file, python]
-        always_run: true
+        # always_run: true
         verbose: true
