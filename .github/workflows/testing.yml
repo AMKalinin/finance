@@ -9,6 +9,7 @@ jobs:
     steps:
       - name: Get repository code
         uses: actions/checkout@v3
+      - name: Change Directory
         run: cd finance_backend
       - name: install deps
         run: poetry insatll
