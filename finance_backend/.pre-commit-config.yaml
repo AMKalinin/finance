@@ -35,4 +35,6 @@ repos:
         entry: "./run_test.sh"     # TODO, костыль, нужно будет разобраться
         language: system
         pass_filenames: false
+        always_run: true
         verbose: true
+        stages: [push]
