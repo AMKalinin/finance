@@ -9,8 +9,10 @@ jobs:
     steps:
       - name: Get repository code
         uses: actions/checkout@v3
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
       - name: Change Directory
-        run: ls -la
+        run: cd finance_backend
       - name: install deps
         run: poetry insatll
       - name: test
