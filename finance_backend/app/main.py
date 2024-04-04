@@ -9,7 +9,6 @@ app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 origins = ["*"]
-a = 1
 
 app.add_middleware(
     CORSMiddleware,
