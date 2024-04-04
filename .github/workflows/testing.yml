@@ -9,9 +9,17 @@ jobs:
     steps:
       - name: Get repository code
         uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
       - name: Install Poetry
         uses: snok/install-poetry@v1
+
       - name: install deps
         run: cd finance_backend; poetry install
+
       - name: test
         run: poetry run pytest
