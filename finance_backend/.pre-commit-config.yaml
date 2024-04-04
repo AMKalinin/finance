@@ -35,4 +35,4 @@ repos:
         entry: "pwd"
         language: system
         pass_filenames: false
-        args: ["discover", "tests"]
+        verbose: true
