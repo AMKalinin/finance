@@ -22,4 +22,4 @@ jobs:
         run: cd finance_backend; poetry install
 
       - name: test
-        run: poetry run pytest
+        run: ./run_test.sh
