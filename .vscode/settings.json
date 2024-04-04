@@ -1,4 +1,12 @@
 {
     "python.analysis.typeCheckingMode": "basic",
-    "flake8.args": [ "--config", "finance_backend/.flake8" ]
+    "flake8.args": [
+        "--config",
+        "finance_backend/.flake8"
+    ],
+    "python.testing.pytestArgs": [
+        "finance_backend"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }
