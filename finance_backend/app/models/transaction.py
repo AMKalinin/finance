@@ -1,7 +1,7 @@
 import datetime
 import uuid
 
-from sqlalchemy import ForeignKey, types
+from sqlalchemy import ForeignKey, Text, types
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base_class import Base
@@ -15,3 +15,4 @@ class Transaction(Base):
     data: Mapped[datetime.date] = mapped_column(nullable=False)
     category: Mapped[int] = mapped_column(ForeignKey("category.id"), nullable=True)
     type: Mapped[int] = mapped_column(ForeignKey("category.id"), nullable=True)
+    description: Mapped[str] = mapped_column(Text)

@@ -8,3 +8,4 @@ class Type(Base):
     # Пополнение\ списание \ перевод
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(Text)
+    description: Mapped[str] = mapped_column(Text)

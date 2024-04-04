@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.api_v1.api import api_router
 from app.core.config import settings
+from app.db.init_db import init_db
 
 # import uvicorn
 
@@ -31,4 +32,7 @@ def create_fastapi_app():
     return app
 
 
+init_db()
+
 app = create_fastapi_app()
+# print(SessionLocal)

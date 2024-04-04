@@ -15,7 +15,12 @@ class Settings:
     POSTGRES_DB = os.environ.get("POSTGRES_DB")
     POSTGRES_HOSTNAME = os.environ.get("POSTGRES_HOSTNAME")
     POSTGRES_PORT = os.environ.get("POSTGRES_PORT")
-    SQLALCHEMY_DATABASE_URI = f"{POSTGRES_SERVER}+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOSTNAME}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    SQLALCHEMY_DATABASE_URI = (
+        f"{POSTGRES_SERVER}+psycopg2://{POSTGRES_USER}:"
+        + f"{POSTGRES_PASSWORD}@{POSTGRES_HOSTNAME}:"
+        + f"{POSTGRES_PORT}/{POSTGRES_DB}"
+    )[0]
+    SQLALCHEMY_DATABASE_URI = "sqlite:///my_test_db.sqlite"
 
 
 settings = Settings()
