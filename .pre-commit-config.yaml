@@ -34,6 +34,7 @@ repos:
         name: run pytest
         entry: "./run_test.sh"     # TODO, костыль, нужно будет разобраться
         language: system
-        pass_filenames: false
+        # pass_filenames: false
+        types: [file, python]
         always_run: true
         verbose: true
