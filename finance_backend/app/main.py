@@ -12,7 +12,7 @@ from app.core.config import settings
 def create_fastapi_app():
     app = FastAPI(title="Finance API", openapi_url="/openapi.json")
     app.include_router(api_router, prefix=settings.API_V1_STR)
-
+    # adsad
     origins = ["*"]
 
     app.add_middleware(
