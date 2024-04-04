@@ -14,6 +14,6 @@ jobs:
       - name: Change Directory
         run: cd finance_backend
       - name: install deps
-        run: poetry insatll
+        run: poetry install
       - name: test
         run: poetry run pytest
