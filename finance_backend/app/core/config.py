@@ -20,7 +20,7 @@ class Settings:
         + f"{POSTGRES_PASSWORD}@{POSTGRES_HOSTNAME}:"
         + f"{POSTGRES_PORT}/{POSTGRES_DB}"
     )[0]
-    SQLALCHEMY_DATABASE_URI = "sqlite:///my_test_db.sqlite"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///finance_db.sqlite"
 
 
 settings = Settings()
