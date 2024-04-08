@@ -8,6 +8,7 @@ packages = [{include = "finance_backend"}]
 
 [tool.isort]
 line_length = 100
+profile = "black"
 
 [tool.black]
 line-length = 100
