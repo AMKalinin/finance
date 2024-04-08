@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session  # noqa
 
-from app.models.accaunt import Accaunt  # noqa
+from app.models.account import Account  # noqa
 from app.models.category import Category  # noqa
 from app.models.transaction import Transaction  # noqa
 from app.models.type import Type  # noqa
