@@ -1,17 +1,12 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session  # noqa
 
-from app.models.accaunt import Accaunt
-from app.models.category import Category
-from app.models.transaction import Transaction
-from app.models.type import Type
+from app.models.accaunt import Accaunt  # noqa
+from app.models.category import Category  # noqa
+from app.models.transaction import Transaction  # noqa
+from app.models.type import Type  # noqa
 
 from .base_class import Base
 from .session import engine
-
-# import datetime
-
-
-# from app.models.transaction import Transaction
 
 
 def init_db():
@@ -30,49 +25,3 @@ def init_db():
 
                 type_popolnenie = Type(name="popolnenie", description="пополнение")  # type: ignore
                 session.add(type_popolnenie)
-
-        with session.begin():
-            acc1 = Accaunt(name="Дебитовая карта", description="основаная карта")  # type: ignore
-            acc2 = Accaunt(name="Топливная карта", description="топливная карта")  # type: ignore
-
-            session.add(acc1)
-            session.add(acc2)
-
-        with session.begin():
-            cat1 = Category(name="products")  # type: ignore
-            cat2 = Category(name="ЗП")  # type: ignore
-
-            session.add(cat1)
-            session.add(cat2)
-
-        with session.begin():
-            transaction1 = Transaction(
-                FROM=acc1.id,
-                TO=acc2.id,
-                size=100,
-                category=None,
-                type=type_perevod.id,
-                description="перевод",
-            )  # type: ignore
-
-            transaction2 = Transaction(
-                FROM=None,
-                TO=acc1.id,
-                size=123,
-                category=cat2.id,
-                type=type_popolnenie.id,
-                description="пополнение",
-            )  # type: ignore
-
-            transaction3 = Transaction(
-                FROM=acc1.id,
-                TO=None,
-                size=50,
-                category=cat1.id,
-                type=type_debit.id,
-                description="Списание",
-            )  # type: ignore
-
-            session.add(transaction1)
-            session.add(transaction2)
-            session.add(transaction3)
