@@ -8,7 +8,7 @@ class transaction_in(BaseModel):
     FROM: UUID | None
     TO: UUID | None
     size: float
-    date: datetime.datetime
+    date: datetime.date
     category: int | None
     type_name: str = Field(alias="typeName")
     description: str
@@ -29,7 +29,7 @@ class transaction_in_size(BaseModel):
 
 class transaction_in_data(BaseModel):
     id: UUID
-    date: datetime.datetime
+    date: datetime.date
 
 
 class transaction_in_category(BaseModel):
@@ -47,7 +47,7 @@ class transaction_out(BaseModel):
     FROM: UUID | None
     TO: UUID | None
     size: float
-    date: datetime.datetime
+    date: datetime.date
     category: int | None
     type_name: str = Field(serialization_alias="typeName")
     description: str
