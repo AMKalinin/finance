@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app import crud
 from app.api import deps
+from app.schemas.account import account_in_balance
 from app.schemas.transaction import (
     transaction_in,
     transaction_in_date,
@@ -43,6 +44,33 @@ def get_all_by_period_with_type(
 
 @router.post("/create", response_model=transaction_out)
 def create_transaction(*, db: Session = Depends(deps.get_db), transaction_info: transaction_in):
+    if transaction_info.type_name == "Debit":
+        crud.account.update_balance(
+            db,
+            account_in_balance(
+                id=transaction_info.FROM, operation="minus", balance=transaction_info.size
+            ),
+        )
+    elif transaction_info.type_name == "Transfer":
+        crud.account.update_balance(
+            db,
+            account_in_balance(
+                id=transaction_info.FROM, operation="minus", balance=transaction_info.size
+            ),
+        )
+        crud.account.update_balance(
+            db,
+            account_in_balance(
+                id=transaction_info.TO, operation="plus", balance=transaction_info.size
+            ),
+        )
+    elif transaction_info.type_name == "Adding":
+        crud.account.update_balance(
+            db,
+            account_in_balance(
+                id=transaction_info.TO, operation="plus", balance=transaction_info.size
+            ),
+        )
     return crud.transaction.create_transaction(db, transaction_info)
 
 

@@ -15,7 +15,8 @@ class account_in_name(BaseModel):
 
 
 class account_in_balance(BaseModel):
-    id: UUID
+    id: UUID | None
+    operation: str
     balance: float = 0
 
 

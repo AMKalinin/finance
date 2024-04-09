@@ -31,7 +31,14 @@ class CRUD_account:
 
     def update_balance(self, db: Session, account_info: account_in_balance) -> Account:
         db_account = db.query(Account).get(account_info.id)
-        db_account.balance = account_info.balance
+
+        if account_info.operation == "minus":
+            db_account.balance -= account_info.balance
+        elif account_info.operation == "plus":
+            db_account.balance += account_info.balance
+        elif account_info.operation == "update":
+            db_account.balance = account_info.balance
+
         db.commit()
         return db_account
 
