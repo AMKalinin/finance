@@ -1,16 +1,16 @@
 import datetime
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class transaction_in(BaseModel):
     FROM: UUID | None
     TO: UUID | None
     size: float
-    data: datetime.datetime
+    date: datetime.datetime
     category: int | None
-    type: int
+    type_name: str = Field(alias="typeName")
     description: str
 
 
@@ -19,7 +19,7 @@ class transaction_in_type(BaseModel):
     FROM: UUID | None
     TO: UUID | None
     category: int | None
-    type: int
+    type_name: str = Field(alias="typeName")
 
 
 class transaction_in_size(BaseModel):
@@ -29,7 +29,7 @@ class transaction_in_size(BaseModel):
 
 class transaction_in_data(BaseModel):
     id: UUID
-    data: datetime.datetime
+    date: datetime.datetime
 
 
 class transaction_in_category(BaseModel):
@@ -47,7 +47,7 @@ class transaction_out(BaseModel):
     FROM: UUID | None
     TO: UUID | None
     size: float
-    data: datetime.datetime
+    date: datetime.datetime
     category: int | None
-    type: int
+    type_name: str = Field(serialization_alias="typeName")
     description: str
