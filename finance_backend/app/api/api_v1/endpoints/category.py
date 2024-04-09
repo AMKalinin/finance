@@ -18,7 +18,7 @@ def create_category(*, db: Session = Depends(deps.get_db), category_info: catego
     return crud.category.create_category(db, category_info)
 
 
-@router.put("/{category_id}/name")
+@router.put("/{id}/name", response_model=category_out)
 def update_name(
     *,
     db: Session = Depends(deps.get_db),

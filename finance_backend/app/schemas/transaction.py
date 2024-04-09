@@ -16,9 +16,9 @@ class transaction_in(BaseModel):
 
 class transaction_in_type(BaseModel):
     id: UUID
-    FROM: UUID | None
-    TO: UUID | None
-    category: int | None
+    FROM: UUID | None = None
+    TO: UUID | None = None
+    category: int | None = None
     type_name: str = Field(alias="typeName")
 
 
@@ -27,7 +27,7 @@ class transaction_in_size(BaseModel):
     size: int
 
 
-class transaction_in_data(BaseModel):
+class transaction_in_date(BaseModel):
     id: UUID
     date: datetime.date
 
