@@ -1,6 +1,8 @@
 import asyncio
 import logging
 
+from aiogram_dialog import setup_dialogs
+
 from create_bot import bot, dp
 from handlers import client
 
@@ -14,6 +16,7 @@ async def on_startup(_):
 
 async def main():
     dp.include_router(client.router)
+    setup_dialogs(dp)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 

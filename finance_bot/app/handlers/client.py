@@ -3,16 +3,20 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.filters import Command
 from aiogram.enums import ParseMode
 
+from aiogram_dialog import DialogManager
+
 import json
 import jinja2
 
 import aiohttp
 
 from keyboards.keyboard_start import get_main_kb
+from .create_transaction import dialog, Dialog_transaction
 from config import BASE_URL
 
 
 router = Router()
+router.include_router(dialog)
 
 
 @router.message(Command("start"))
@@ -40,5 +44,7 @@ async def view_balance(message: Message):
 
 
 @router.message(F.text.lower() == "создать транзакцию")
-async def create_transaction(message: Message):
+async def create_transaction(message: Message, dialog_manager: DialogManager):
+    print("asdfasdfhfhsadf")
     await message.answer("Выберите тип транзакции", reply_markup=ReplyKeyboardRemove())
+    await dialog_manager.start(Dialog_transaction.first)
