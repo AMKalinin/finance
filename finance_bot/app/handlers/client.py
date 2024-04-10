@@ -8,7 +8,7 @@ import jinja2
 
 import aiohttp
 
-from keyboards.keyboard_start import get_yes_no_kb
+from keyboards.keyboard_start import get_main_kb
 from config import BASE_URL
 
 
@@ -17,7 +17,7 @@ router = Router()
 
 @router.message(Command("start"))
 async def cmd_start(message: Message):
-    await message.answer("Hello!", reply_markup=get_yes_no_kb())
+    await message.answer("Hello!", reply_markup=get_main_kb())
 
 
 @router.message(F.text.lower() == "текущий баланс")

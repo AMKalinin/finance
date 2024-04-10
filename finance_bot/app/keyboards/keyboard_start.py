@@ -2,7 +2,7 @@ from aiogram.types import ReplyKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
-def get_yes_no_kb() -> ReplyKeyboardMarkup:
+def get_main_kb() -> ReplyKeyboardMarkup:
     kb = ReplyKeyboardBuilder()
     kb.button(text="Текущий баланс")
     kb.button(text="Создать транзакцию")
