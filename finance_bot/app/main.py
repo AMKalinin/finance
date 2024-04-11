@@ -10,10 +10,6 @@ from handlers import client
 logging.basicConfig(level=logging.INFO)
 
 
-async def on_startup(_):
-    print("Бот вышел в онлайн")
-
-
 async def main():
     dp.include_router(client.router)
     setup_dialogs(dp)
