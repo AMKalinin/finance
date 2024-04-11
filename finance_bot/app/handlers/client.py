@@ -1,19 +1,16 @@
-from aiogram import Router, F
-from aiogram.types import Message
-from aiogram.filters import Command
-from aiogram.enums import ParseMode
-
-from aiogram_dialog import DialogManager
-
 import json
-import jinja2
 
 import aiohttp
-
-from keyboards.keyboard_start import get_main_kb
-from .create_transaction import dialog, Dialog_transaction
+import jinja2
+from aiogram import F, Router
+from aiogram.enums import ParseMode
+from aiogram.filters import Command
+from aiogram.types import Message
+from aiogram_dialog import DialogManager
 from config import BASE_URL
+from keyboards.keyboard_start import get_main_kb
 
+from .create_transaction import Dialog_transaction, dialog
 
 router = Router()
 router.include_router(dialog)

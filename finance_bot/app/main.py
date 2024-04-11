@@ -2,10 +2,8 @@ import asyncio
 import logging
 
 from aiogram_dialog import setup_dialogs
-
 from create_bot import bot, dp
 from handlers import client
-
 
 logging.basicConfig(level=logging.INFO)
 
