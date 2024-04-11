@@ -1,5 +1,5 @@
 from aiogram import Router, F
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.enums import ParseMode
 
@@ -45,6 +45,4 @@ async def view_balance(message: Message):
 
 @router.message(F.text.lower() == "создать транзакцию")
 async def create_transaction(message: Message, dialog_manager: DialogManager):
-    print("asdfasdfhfhsadf")
-    await message.answer("Выберите тип транзакции", reply_markup=ReplyKeyboardRemove())
-    await dialog_manager.start(Dialog_transaction.first)
+    await dialog_manager.start(Dialog_transaction.select_type)
