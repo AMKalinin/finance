@@ -16,6 +16,17 @@ router = Router()
 router.include_router(dialog)
 
 
+async def get_data(**kwargs):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(BASE_URL + "/account/") as response:
+            account = await response.text()
+            account = json.loads(account)
+        async with session.get(BASE_URL + "/category/") as response:
+            category = await response.text()
+            category = json.loads(category)
+    return {"account": account, "category": category}
+
+
 @router.message(Command("start"))
 async def cmd_start(message: Message):
     await message.answer("Hello!", reply_markup=get_main_kb())
@@ -42,4 +53,4 @@ async def view_balance(message: Message):
 
 @router.message(F.text.lower() == "создать транзакцию")
 async def create_transaction(message: Message, dialog_manager: DialogManager):
-    await dialog_manager.start(Dialog_transaction.select_type)
+    await dialog_manager.start(Dialog_transaction.select_type, data=await get_data())
