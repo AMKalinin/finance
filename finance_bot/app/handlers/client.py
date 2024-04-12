@@ -10,10 +10,12 @@ from aiogram_dialog import DialogManager
 from config import BASE_URL
 from keyboards.keyboard_start import get_main_kb
 
-from .create_transaction import Dialog_transaction, dialog
+from dialogs import transaction_dialog
+from dialogs.transaction.states import Dialog_transaction
+
 
 router = Router()
-router.include_router(dialog)
+router.include_router(transaction_dialog)
 
 
 async def get_data(**kwargs):
