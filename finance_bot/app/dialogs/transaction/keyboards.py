@@ -30,8 +30,8 @@ def accout(on_click):
             on_click=on_click,
         ),
         id="scrol_account",
-        width=3,
-        height=1,
+        width=2,
+        height=3,
     )
 
 
@@ -45,6 +45,6 @@ def category(on_click):
             on_click=on_click,
         ),
         id="numbers",
-        width=3,
-        height=1,
+        width=2,
+        height=3,
     )

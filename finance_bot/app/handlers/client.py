@@ -10,12 +10,16 @@ from aiogram_dialog import DialogManager
 from config import BASE_URL
 from keyboards.keyboard_start import get_main_kb
 
-from dialogs import transaction_dialog
+from dialogs import transaction_dialog, account_create_dialog, category_create_dialog
 from dialogs.transaction.states import Dialog_transaction
+from dialogs.create_account.states import Account_create
+from dialogs.create_category.states import Category_create
 
 
 router = Router()
-router.include_router(transaction_dialog)
+router.include_routers(
+    *[transaction_dialog, account_create_dialog, category_create_dialog]
+)
 
 
 async def get_data(**kwargs):
@@ -56,3 +60,13 @@ async def view_balance(message: Message):
 @router.message(F.text.lower() == "создать транзакцию")
 async def create_transaction(message: Message, dialog_manager: DialogManager):
     await dialog_manager.start(Dialog_transaction.select_type, data=await get_data())
+
+
+@router.message(F.text.lower() == "создать счет")
+async def create_account(message: Message, dialog_manager: DialogManager):
+    await dialog_manager.start(Account_create.name)
+
+
+@router.message(F.text.lower() == "создать категорию")
+async def create_category(message: Message, dialog_manager: DialogManager):
+    await dialog_manager.start(Category_create.name)
