@@ -17,8 +17,8 @@ from app.schemas.transaction import (
 
 class CRUD_transaction:
     def create_transaction(self, db: Session, transaction_info: transaction_in) -> Transaction:
-        db_FROM = db.query(Account).filter(Account.id == transaction_info.FROM).one()
-        db_TO = db.query(Account).filter(Account.id == transaction_info.TO).one()
+        db_FROM = db.query(Account).filter(Account.id == transaction_info.FROM).first()
+        db_TO = db.query(Account).filter(Account.id == transaction_info.TO).first()
 
         db_category = db.query(Category).filter(Category.id == transaction_info.category).first()
 
