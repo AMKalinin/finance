@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Text, types
+from sqlalchemy import ForeignKey, Text, types
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base_class import Base
@@ -11,3 +11,4 @@ class Account(Base):
     balance: Mapped[float] = mapped_column()
     name: Mapped[str] = mapped_column(Text)
     description: Mapped[str] = mapped_column(Text)
+    currency_id: Mapped[int] = mapped_column(ForeignKey("currency.id"), nullable=False)
