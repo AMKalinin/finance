@@ -9,7 +9,9 @@ class CRUD_category:
         return db.query(Category).all()
 
     def create_category(self, db: Session, category_info: category_in) -> Category:
-        db_category = Category(name=category_info.name)  # type: ignore
+        db_category = Category(
+            name=category_info.name, type_name=category_info.type_name
+        )  # type: ignore
         db.add(db_category)
         db.commit()
         db.refresh(db_category)
