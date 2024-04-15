@@ -25,7 +25,7 @@ def type_name_window():
         keyboards.type_name_category(selected.on_type_name),
         # MessageInput(content_types=[ContentType.TEXT], func=selected.on_input_name),
         Cancel(Const("Cancel")),
-        state=states.Category_create.name,
+        state=states.Category_create.type_name,
     )
 
 
