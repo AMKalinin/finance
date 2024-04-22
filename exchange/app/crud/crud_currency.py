@@ -15,3 +15,6 @@ class CRUD_currency:
         db.commit()
         db.refresh(db_currency)
         return db_currency
+
+
+currency = CRUD_currency()
