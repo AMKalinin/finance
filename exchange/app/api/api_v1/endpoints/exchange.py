@@ -10,7 +10,7 @@ from app import crud
 router = APIRouter()
 
 
-@router.get("/", response_model=exchange)
+@router.get("/rate", response_model=exchange | None)
 def get_exchange_rate(
     *, db: Session = Depends(deps.get_db), from_cur: str, to_cur: str
 ):

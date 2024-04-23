@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.api_v1.api import api_router
 from app.core.config import settings
 
+from app.db.init_db import init_db
+
 
 def create_fastapi_app():
     app = FastAPI(title="Finance API", openapi_url="/openapi.json")
@@ -26,5 +28,7 @@ def create_fastapi_app():
     )
     return app
 
+
+init_db()
 
 app = create_fastapi_app()
