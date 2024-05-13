@@ -11,4 +11,4 @@ class Account(Base):
     balance: Mapped[float] = mapped_column()
     name: Mapped[str] = mapped_column(Text)
     description: Mapped[str] = mapped_column(Text)
-    currency_id: Mapped[int] = mapped_column(ForeignKey("currency.id"), nullable=False)
+    currency_id: Mapped[int] = mapped_column(ForeignKey("currency.name"), nullable=False)
