@@ -35,17 +35,7 @@ export const finApi = {
   },
 
   async createTransaction(transaction) {
-    return axios.post('http://192.168.0.24:8001/api/v1/transaction/create',
-      {
-        FROM: transaction.from,
-        TO: transaction.to,
-        size: transaction.size,
-        exchange_rate: 0,
-        date: transaction.date,
-        category: transaction.category,
-        typeName: transaction.typeName,
-        description: 'test'
-      }).then((response) => response.data)
+    return axios.post('http://192.168.0.24:8001/api/v1/transaction/create', transaction).then((response) => response.data)
   },
 
   async deleteAccount(id) {

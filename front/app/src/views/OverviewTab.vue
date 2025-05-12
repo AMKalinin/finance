@@ -62,6 +62,8 @@
     />
     <TransactionTable
       :transactions="transactions"
+      :categories="categories"
+      :accounts="accounts"
       @add-transaction="emit('addTransaction', $event)"
       @delete-transaction="emit('deleteTransaction', $event)"
     />

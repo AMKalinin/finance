@@ -60,14 +60,13 @@
   }
 
   const addTransaction = async (transaction: any) => {
-    console.log(transaction)
-
-    // try {
-    //   const transactionResp = await finApi.createTransaction(transaction)
-    //   transaction.value.push(transactionResp)
-    // } catch (error) {
-    //   console.error('Не удалось создать транзакцию:', error);
-    // }
+    try {
+      await finApi.createTransaction(transaction)
+      transactions.value.push(transaction)
+      await fetchAccounts()
+    } catch (error) {
+      console.error('Не удалось создать транзакцию:', error);
+    }
   }
 
   const deleteTransaction = async (transactionId: number) => {

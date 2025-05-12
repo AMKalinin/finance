@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
   import { PlusIcon } from '@heroicons/vue/24/outline'
 
   const emit = defineEmits([
@@ -7,45 +7,77 @@
         ])
 
   const props = defineProps<{
-    transactions: any[]
+    transactions: any[],
+    accounts: any[],
+    categories: any[],
+    showDescription?: boolean
   }>()
 
   const showNewTransactionModal = ref(false)
-  const newTransactionType = ref('sent')
+  const newTransactionType = ref('Debit')
   const newTransactionAmount = ref('')
-  const newTransactionSymbol = ref('BTC')
-  const newTransactionTo = ref('')
-  const newTransactionFrom = ref('')
+  const newTransactionFromAccount = ref('')
+  const newTransactionToAccount = ref('')
+  const newTransactionCategory = ref('')
+  const newTransactionDate = ref(new Date().toISOString().split('T')[0])
+  const newTransactionDescription = ref('')
 
   const openNewTransactionModal = () => {
     showNewTransactionModal.value = true
-    newTransactionType.value = 'sent'
+    newTransactionType.value = 'Debit'
     newTransactionAmount.value = ''
-    newTransactionSymbol.value = 'BTC'
-    newTransactionTo.value = ''
-    newTransactionFrom.value = ''
+    newTransactionFromAccount.value = ''
+    newTransactionToAccount.value = ''
+    newTransactionCategory.value = ''
+    newTransactionDate.value = new Date().toISOString().split('T')[0]
+    newTransactionDescription.value = ''
   }
 
   const createNewTransaction = () => {
     if (newTransactionAmount.value) {
       const newTransaction: any = {
-        type: newTransactionType.value,
-        amount: parseFloat(newTransactionAmount.value),
-        symbol: newTransactionSymbol.value,
-        date: new Date().toISOString().split('T')[0]
+        typeName: newTransactionType.value,
+        size: parseFloat(newTransactionAmount.value),
+        date: newTransactionDate.value,
+        description: newTransactionDescription.value,
+        exchange_rate: 0
       }
 
-      if (newTransactionType.value === 'sent' || newTransactionType.value === 'transfer') {
-        newTransaction.to = newTransactionTo.value
+      if (newTransactionType.value === 'Debit') {
+        newTransaction.FROM = newTransactionFromAccount.value
+        newTransaction.TO = null
+        newTransaction.category = parseInt(newTransactionCategory.value)
+      } else if (newTransactionType.value === 'Adding') {
+        newTransaction.FROM = null
+        newTransaction.TO = newTransactionToAccount.value
+        newTransaction.category = parseInt(newTransactionCategory.value)
+      } else if (newTransactionType.value === 'Transfer') {
+        newTransaction.FROM = newTransactionFromAccount.value
+        newTransaction.TO = newTransactionToAccount.value
+        newTransaction.category = null
       }
 
-      if (newTransactionType.value === 'received' || newTransactionType.value === 'transfer') {
-        newTransaction.from = newTransactionFrom.value
-      }
       emit('addTransaction', newTransaction)
-      // transactions.unshift(newTransaction)
       showNewTransactionModal.value = false
     }
+  }
+
+  const getDebitCategories = () => {
+    return props.categories.filter(cat => cat.typeCategory === 'Debit')
+  }
+
+  const getCreditCategories = () => {
+    return props.categories.filter(cat => cat.typeCategory === 'Credit')
+  }
+
+  const getAccountName = (accountId: string) => {
+    const account = props.accounts.find(acc => acc.id === accountId)
+    return account ? account.name : accountId
+  }
+
+  const getCategoryName = (categoryId: number) => {
+    const category = props.categories.find(cat => cat.id === categoryId)
+    return category ? category.name : categoryId
   }
 </script>
 
@@ -68,6 +100,7 @@
           <th class="pb-2">Amount</th>
           <th class="pb-2">To/From</th>
           <th class="pb-2">Date</th>
+          <th v-if="showDescription" class="pb-2">Description</th>
         </tr>
       </thead>
       <tbody>
@@ -90,23 +123,24 @@
                 </svg>
               </div>
               <div>
-                <div class="font-medium">
-                  {{ tx.typeName === 'Debit' ? 'Sent' : tx.typeName === 'Adding' ? 'Received' : 'Transfer' }}
-                </div>
-                <!-- <div class="text-sm text-gray-500">{{ tx.symbol }}</div> -->
+                <div class="font-medium">{{ tx.typeName }}</div>
               </div>
             </div>
           </td>
-          <td>{{ tx.size }} <!-- {{ tx.symbol }} --></td>
+          <td>{{ tx.size }}</td>
           <td class="font-mono text-sm">
             <template v-if="tx.typeName === 'Transfer'">
-              {{ tx.FROM }} → {{ tx.TO }}
+              {{ getAccountName(tx.FROM) }} → {{ getAccountName(tx.TO) }}
+            </template>
+            <template v-else-if="tx.typeName === 'Debit'">
+              {{ getAccountName(tx.FROM) }} → {{ getCategoryName(tx.category) }}
             </template>
             <template v-else>
-              {{ tx.typeName === 'Debit' ? (tx.FROM + ' → ' + tx.category): (tx.category + ' → ' + tx.TO)}}
+              {{ getCategoryName(tx.category) }} → {{ getAccountName(tx.TO) }}
             </template>
           </td>
-          <td>{{ new Date(tx.date).toLocaleDateString('ru-RU', {year: 'numeric', month: 'long', day: 'numeric'}) }}</td>
+          <td>{{ new Date(tx.date).toLocaleDateString('ru-RU', {year: 'numeric', month: 'numeric', day: 'numeric'}) }}</td>
+          <td v-if="showDescription">{{ tx.description }}</td>
         </tr>
       </tbody>
     </table>
@@ -122,11 +156,13 @@
               v-model="newTransactionType"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
-              <option value="sent">Sent</option>
-              <option value="received">Received</option>
-              <option value="transfer">Transfer</option>
+              <option value="Debit">Debit</option>
+              <option value="Adding">Adding</option>
+              <option value="Transfer">Transfer</option>
             </select>
           </div>
+
+          <!-- Amount -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
             <input
@@ -137,38 +173,80 @@
               placeholder="Enter amount"
             />
           </div>
+
+          <!-- Date -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
-            <select
-              v-model="newTransactionSymbol"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              <option value="BTC">Bitcoin (BTC)</option>
-              <option value="ETH">Ethereum (ETH)</option>
-              <option value="LTC">Litecoin (LTC)</option>
-              <option value="USD">US Dollar (USD)</option>
-              <option value="EUR">Euro (EUR)</option>
-            </select>
-          </div>
-          <div v-if="newTransactionType === 'sent' || newTransactionType === 'transfer'">
-            <label class="block text-sm font-medium text-gray-700 mb-1">To</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
             <input
-              v-model="newTransactionTo"
-              type="text"
+              v-model="newTransactionDate"
+              type="date"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              placeholder="Enter recipient address"
             />
           </div>
-          <div v-if="newTransactionType === 'received' || newTransactionType === 'transfer'">
-            <label class="block text-sm font-medium text-gray-700 mb-1">From</label>
+
+
+
+          <!-- Source Account (for Debit and Transfer) -->
+          <div v-if="newTransactionType === 'Debit' || newTransactionType === 'Transfer'">
+            <label class="block text-sm font-medium text-gray-700 mb-1">From Account</label>
+            <select
+              v-model="newTransactionFromAccount"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              <option value="">Select account</option>
+              <option v-for="account in accounts" :key="account.id" :value="account.id">
+                {{ account.name }} ({{ account.balance }} {{ account.currency }})
+              </option>
+            </select>
+          </div>
+
+          <!-- Destination Account (for Adding and Transfer) -->
+          <div v-if="newTransactionType === 'Adding' || newTransactionType === 'Transfer'">
+            <label class="block text-sm font-medium text-gray-700 mb-1">To Account</label>
+            <select
+              v-model="newTransactionToAccount"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              <option value="">Select account</option>
+              <option v-for="account in accounts" :key="account.id" :value="account.id">
+                {{ account.name }} ({{ account.balance }} {{ account.currency }})
+              </option>
+            </select>
+          </div>
+
+          <!-- Category (for Debit and Adding) -->
+          <div v-if="newTransactionType === 'Debit' || newTransactionType === 'Adding'">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <select
+              v-model="newTransactionCategory"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              <option value="">Select category</option>
+              <template v-if="newTransactionType === 'Debit'">
+                <option v-for="category in getDebitCategories()" :key="category.id" :value="category.id">
+                  {{ category.name }}
+                </option>
+              </template>
+              <template v-else>
+                <option v-for="category in getCreditCategories()" :key="category.id" :value="category.id">
+                  {{ category.name }}
+                </option>
+              </template>
+            </select>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <input
-              v-model="newTransactionFrom"
+              v-model="newTransactionDescription"
               type="text"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              placeholder="Enter sender address"
+              placeholder="Enter description"
             />
           </div>
         </div>
+
         <div class="flex justify-end gap-3 mt-6">
           <button
             @click="showNewTransactionModal = false"
@@ -187,3 +265,9 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+.dropdown-menu {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+</style>

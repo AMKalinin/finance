@@ -4,7 +4,9 @@
   const emit = defineEmits(['addTransaction', 'deleteTransaction'])
 
   const props = defineProps<{
-    transactions: any[]
+    transactions: any[],
+    accounts: any[],
+    categories: any[]
   }>()
 
 </script>
@@ -14,6 +16,9 @@
   <div class="bg-white p-6 rounded-xl">
     <TransactionTable
       :transactions="transactions"
+      :accounts="accounts"
+      :categories="categories"
+      :showDescription="true"
       @add-transaction="emit('addTransaction', $event)"
       @delete-transaction="emit('deleteTransaction', $event)"
     />
