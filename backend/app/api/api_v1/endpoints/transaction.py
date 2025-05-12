@@ -51,7 +51,6 @@ def get_all_by_period_with_type(
 def create_transaction(
     *, fin_app: Fin_app = Depends(deps.get_fin_service), transaction_info: transaction_in
 ):
-    print(transaction_info)
     return fin_app.create_transaction(transaction_info)
 
 

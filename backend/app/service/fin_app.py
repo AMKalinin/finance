@@ -122,7 +122,7 @@ class Fin_app:
                 ),
                 commit_transaction=False,
             )
-            size = transaction_info.size * transaction_info.exchange_rate
+            size = transaction_info.size * 1 # transaction_info.exchange_rate
             self.update_account_balance(
                 account_in_balance(id=transaction_info.TO, operation="plus", balance=size),
                 commit_transaction=False,
