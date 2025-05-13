@@ -95,6 +95,7 @@
   async function fetchTransactions() {
     try {
       transactions.value = await finApi.getTransactions()
+      transactions.value = transactions.value.sort((a, b) => new Date(b.date) - new Date(a.date))
     } catch (error) {
       console.error('Не удалось загрузить :', error);
     }
