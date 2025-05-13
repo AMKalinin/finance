@@ -1,3 +1,4 @@
+from typing import Generator
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from keycloak import KeycloakOpenID
@@ -7,16 +8,16 @@ from app.service.fin_app import Fin_app
 
 
 def get_db():
-    # try:
-    #     db = SessionLocal()
-    #     yield db
+    try:
+        db = SessionLocal()
+        yield db
     # except:
     #     db.rollback()
     # else:
     #     db.commit()
-    # finally:
-    #     db.close()
-    return SessionLocal()
+    finally:
+        db.close()
+    #return SessionLocal()
 
 
 keycloak_openid = KeycloakOpenID(
@@ -46,7 +47,11 @@ def get_current_user(token: str):
         )
 
 
-def get_fin_service(token: str = Depends(oauth2_scheme)) -> Fin_app:
-    user = get_current_user(token)
-    db = get_db()
-    return Fin_app(db, user)
+def get_fin_service(token: str = Depends(oauth2_scheme)) -> Generator[Fin_app, ..., ...]:
+     try:
+        user = get_current_user(token)
+        db = next(get_db())
+        f_app = Fin_app(db, user)
+        yield f_app
+     finally:
+        db.close()
