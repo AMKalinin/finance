@@ -12,7 +12,8 @@ export const initKeycloak = () => {
   return keycloak.init({
     onLoad: 'login-required', // автоматически перенаправляет на страницу входа
     checkLoginIframe: false,
-    pkceMethod: 'S256'
+    pkceMethod: 'S256',
+    redirectUri: 'http://192.168.0.24:5173/overview'
   })
 }
 

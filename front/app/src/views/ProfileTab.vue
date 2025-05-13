@@ -1,8 +1,14 @@
-<script >
-  import { getUserInfo } from '../keycloak/keycloak.js'
+<script>
+  import { getUserInfo, logout } from '../keycloak/keycloak.js'
+
   export default{
     data() {
       return getUserInfo()
+    },
+    methods: {
+      userLogOut(){
+        return logout()
+      }
     }
   }
 </script>
@@ -12,6 +18,7 @@
   <div>
       <h1>Profile</h1>
       <h2>Email: {{email}}</h2>
+      <button @click="userLogOut()">Log out</button>
   </div>
 </template>
 

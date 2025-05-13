@@ -62,7 +62,7 @@
   const addTransaction = async (transaction: any) => {
     try {
       await finApi.createTransaction(transaction)
-      transactions.value.push(transaction)
+      transactions.value.unshift(transaction)
       await fetchAccounts()
     } catch (error) {
       console.error('Не удалось создать транзакцию:', error);
