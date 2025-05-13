@@ -136,4 +136,7 @@
     margin: 0;
     font-family: 'Inter', sans-serif;
   }
+  main {
+    background-color: #F4F4F4 !important;
+  }
 </style>

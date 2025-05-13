@@ -63,3 +63,8 @@
   </div>
 </template>
 
+<style>
+  .bg-sidebar{
+    background-color: #1A1D1F !important;
+  }
+</style>
