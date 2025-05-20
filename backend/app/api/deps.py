@@ -22,7 +22,7 @@ def get_db():
 
 keycloak_openid = KeycloakOpenID(
     server_url="http://192.168.0.24:8080/",
-    client_id="fin_client",
+    client_id="fin-client",
     realm_name="fin_realm",
     client_secret_key="wztpnAcy9vOCx59iqXSTQmngqiEDO4uH",
 )
