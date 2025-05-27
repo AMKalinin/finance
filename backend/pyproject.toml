@@ -3,7 +3,6 @@ name = "finance-backend"
 version = "0.1.0"
 description = ""
 authors = ["akalinin <am1kalinin@gmail.com>"]
-readme = "README.md"
 packages = [{include = "finance_backend"}]
 
 [tool.isort]
