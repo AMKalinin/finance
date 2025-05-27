@@ -3,6 +3,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from keycloak import KeycloakOpenID
 
+from app.core.config import settings
 from app.db.session import SessionLocal
 from app.service.fin_app import Fin_app
 
@@ -21,16 +22,16 @@ def get_db():
 
 
 keycloak_openid = KeycloakOpenID(
-    server_url="http://192.168.0.24:8080/",
-    client_id="fin-client",
-    realm_name="fin_realm",
-    client_secret_key="wztpnAcy9vOCx59iqXSTQmngqiEDO4uH",
+    server_url=settings.KEYCLOAK_URL,
+    client_id="finsli-client",
+    realm_name="alkal_realm",
+    client_secret_key=settings.KEYCLOAK_SECRET_FINSLI_API,
 )
 
 
 oauth2_scheme = OAuth2AuthorizationCodeBearer(
-    authorizationUrl="http://192.168.0.24:8080/realms/fin_realm/protocol/openid-connect/auth",
-    tokenUrl="http://192.168.0.24:8080/realms/fin_realm/protocol/openid-connect/token",
+    authorizationUrl=settings.AUTHORIZATION_URL,
+    tokenUrl=settings.TOKEN_URL,
     scopes={"openid": "openID"},
 )
 

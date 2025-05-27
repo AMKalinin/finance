@@ -22,5 +22,14 @@ class Settings:
     )[0]
     SQLALCHEMY_DATABASE_URI = "sqlite:///finance_db.sqlite"
 
-
+    
+    KEYCLOAK_URL = os.environ.get("KC_URL")
+    KEYCLOAK_SECRET_FINSLI_API = os.environ.get("KC_CLIENT_SECRET_KEY_FINSI_API")
+    AUTHORIZATION_URL = f'{KEYCLOAK_URL}realms/alkal_realm/protocol/openid-connect/auth'
+    TOKEN_URL = f'{KEYCLOAK_URL}realms/alkal_realm/protocol/openid-connect/token'
 settings = Settings()
+
+print(settings.AUTHORIZATION_URL)
+print(settings.TOKEN_URL)
+print(settings.KEYCLOAK_URL)
+print(settings.POSTGRES_SERVER)
