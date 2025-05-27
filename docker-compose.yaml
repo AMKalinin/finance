@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  
+  keycloak-db:
+    image: postgres:15
+    container_name: keycloak-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - keycloak-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      KC_DB: ${KC_DB}
+      KC_DB_URL: ${KC_DB_URL} 
+      KC_DB_USERNAME: ${KC_DB_USERNAME} 
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_HOSTNAME_STRICT: ${KC_HOSTNAME_STRICT}
+      KC_HOSTNAME_STRICT_HTTPS: ${KC_HOSTNAME_STRICT_HTTPS} 
+      KC_HTTP_ENABLED: ${KC_HTTP_ENABLED}
+      KC_HEALTH_ENABLED: ${KC_HEALTH_ENABLED} 
+    command:
+      - start
+    ports:
+      - "8080:8080"
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    networks:
+      - keycloak-network
+
+  finsi:
+    build: ./backend
+    container_name: finsi
+    environment:
+      KC_URL: ${KC_URL}
+      KC_CLIENT_SECRET_KEY_FINSI_API: ${KC_CLIENT_SECRET_KEY_FINSI_API} 
+    ports:
+      - "8001:8001"
+      #depends_on:
+      #keycloak:
+      #condition: service_healthy
+
+
+volumes:
+  postgres_data:
+    name: keycloak_postgres_data
+
+networks:
+  keycloak-network:
+    name: keycloak-network
