@@ -7,7 +7,7 @@ from app.db.init_db import init_db
 
 
 def create_fastapi_app():
-    app = FastAPI(title="Finance API", openapi_url="/openapi.json")
+    app = FastAPI(title="Finance API", openapi_url="/api/openapi.json", docs_url="/api/docs")
     app.include_router(api_router, prefix=settings.API_V1_STR)
 
     origins = ["*"]
