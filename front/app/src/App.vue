@@ -79,6 +79,7 @@
   async function fetchAccounts() {
     try {
       accounts.value = await finApi.getAccounts()
+      accounts.value = Array.isArray(accounts.value) ? accounts.value : []
     } catch (error) {
       console.error('Не удалось загрузить счета:', error);
     }
