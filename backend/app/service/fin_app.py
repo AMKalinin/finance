@@ -4,6 +4,7 @@ from uuid import UUID
 from sqlalchemy.orm import PassiveFlag, Session
 
 from app.crud import Crud
+from app.err import SubscriptionError
 from app.models.account import Account
 from app.schemas.account import (
     account_in,
@@ -41,9 +42,12 @@ class Fin_app:
     def __init__(self, db: Session, user_info: dict) -> None:
         self.db: Session = db
         self.crud: Crud = Crud(self.db, user_info)
+        self.user_info: dict = user_info
 
     @commit
     def create_account(self, account_info: account_in) -> Account:
+        if not self.user_info.isSubscribed and len(self.get_all_account()) >= 2:
+           raise SubscriptionError('Превышен лимит на счета для аккаунта без подписки')
         acc = self.crud.account.create_account(account_info)
         return acc
 
@@ -78,6 +82,8 @@ class Fin_app:
 
     @commit
     def create_category(self, category_info: category_in):
+        if not self.user_info.isSubscribed and len(self.get_all_category()) >= 10:
+           raise SubscriptionError('Превышен лимит на категории для аккаунта без подписки')
         category = self.crud.category.create_category(category_info)
         return category
 
@@ -107,6 +113,8 @@ class Fin_app:
 
     @commit
     def create_transaction(self, transaction_info: transaction_in):
+        if not self.user_info.isSubscribed and len(self.get_all_transaction_for_period(date.today(), date.today())) >= 10:
+           raise SubscriptionError('Превышен лимит на количество транзакций в день для аккаунта без подписки')
         # TODO скорее всего нужно вынести в отдельную функцию
         if transaction_info.type_name == "Debit":
             self.update_account_balance(
