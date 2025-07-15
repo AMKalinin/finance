@@ -7,6 +7,11 @@ from app.schemas.account import (
     account_in_balance,
     account_in_description,
     account_in_name,
+    account_in_interest_rate,
+    account_in_archived,
+    account_in_decimal_places,
+    account_in_emergency_fund,
+    account_in_primary
 )
 
 
@@ -20,6 +25,12 @@ class CRUD_account(CRUD_base):
             currency=account_info.currency,
             name=account_info.name,
             description=account_info.description,
+            interest_rate=account_info.interest_rate,
+            is_emergency_fund=account_info.is_emergency_fund,
+            decimal_places=account_info.decimal_places,
+            is_archived=account_info.is_archived,
+            is_primary=account_info.is_primary,
+            account_type=account_info.account_type,
             user_id=self.user.id,
         )  # type: ignore
         self.db.add(db_account)
@@ -65,6 +76,61 @@ class CRUD_account(CRUD_base):
             return db_account
 
         db_account.description = account_info.description
+        return db_account
+
+    def update_interest_rate(self, account_info: account_in_interest_rate) -> Account:
+        db_account = self.user.accounts.filter(
+            Account.id == account_info.id
+        ).first()  # self.db.query(Account).get(account_info.id)
+
+        if db_account == None:
+            return db_account
+
+        db_account.interest_rate = account_info.interest_rate
+        return db_account
+    
+    def update_emergency_fund(self, account_info: account_in_emergency_fund) -> Account:
+        db_account = self.user.accounts.filter(
+            Account.id == account_info.id
+        ).first()  # self.db.query(Account).get(account_info.id)
+
+        if db_account == None:
+            return db_account
+
+        db_account.is_emergency_fund = account_info.is_emergency_fund
+        return db_account
+
+    def update_decimal_places(self, account_info: account_in_decimal_places) -> Account:
+        db_account = self.user.accounts.filter(
+            Account.id == account_info.id
+        ).first()  # self.db.query(Account).get(account_info.id)
+
+        if db_account == None:
+            return db_account
+
+        db_account.decimal_places = account_info.decimal_places
+        return db_account
+
+    def update_archived(self, account_info: account_in_archived) -> Account:
+        db_account = self.user.accounts.filter(
+            Account.id == account_info.id
+        ).first()  # self.db.query(Account).get(account_info.id)
+
+        if db_account == None:
+            return db_account
+
+        db_account.is_archived = account_info.is_archived
+        return db_account
+
+    def update_primary(self, account_info: account_in_primary) -> Account:
+        db_account = self.user.accounts.filter(
+            Account.id == account_info.id
+        ).first()  # self.db.query(Account).get(account_info.id)
+
+        if db_account == None:
+            return db_account
+
+        db_account.is_primary = account_info.is_primary
         return db_account
 
     def delete_account(self):

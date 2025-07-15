@@ -4,13 +4,18 @@ from uuid import UUID
 from sqlalchemy.orm import PassiveFlag, Session
 
 from app.crud import Crud
-from app.err import SubscriptionError
+from app.err.errors import SubscriptionError
 from app.models.account import Account
 from app.schemas.account import (
     account_in,
     account_in_balance,
     account_in_description,
     account_in_name,
+    account_in_primary,
+    account_in_archived,
+    account_in_decimal_places,
+    account_in_emergency_fund,
+    account_in_interest_rate,
 )
 from app.schemas.category import category_in, category_in_name
 from app.schemas.transaction import (
@@ -72,6 +77,31 @@ class Fin_app:
     @commit
     def update_account_description(self, account_info: account_in_description) -> Account:
         acc = self.crud.account.update_description(account_info)
+        return acc
+    
+    @commit
+    def update_account_interest_rate(self, account_info: account_in_interest_rate) -> Account:
+        acc = self.crud.account.update_interest_rate(account_info)
+        return acc
+
+    @commit
+    def update_account_emergency_fund(self, account_info: account_in_emergency_fund) -> Account:
+        acc = self.crud.account.update_emergency_fund(account_info)
+        return acc
+ 
+    @commit
+    def update_account_decimal_places(self, account_info: account_in_decimal_places) -> Account:
+        acc = self.crud.account.update_decimal_places(account_info)
+        return acc
+
+    @commit
+    def update_account_archived(self, account_info: account_in_archived) -> Account:
+        acc = self.crud.account.update_archived(account_info)
+        return acc
+ 
+    @commit
+    def update_account_primary(self, account_info: account_in_primary) -> Account:
+        acc = self.crud.account.update_primary(account_info)
         return acc
 
     def delete_account(self):
