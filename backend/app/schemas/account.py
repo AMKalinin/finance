@@ -3,6 +3,8 @@ from uuid import UUID
 from pydantic import BaseModel
 
 from app.models.account import AccountType
+from app.schemas.transaction import transaction_in
+
 
 class account_in(BaseModel):
     name: str
@@ -15,6 +17,7 @@ class account_in(BaseModel):
     is_archived: bool = False
     is_primary: bool = False
     account_type: AccountType
+    transaction_info: transaction_in
 
 
 class account_in_name(BaseModel):

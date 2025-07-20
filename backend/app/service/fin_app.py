@@ -1,5 +1,3 @@
-from datetime import date
-from uuid import UUID
 
 from sqlalchemy.orm import PassiveFlag, Session
 
@@ -51,9 +49,25 @@ class Fin_app:
 
     @commit
     def create_account(self, account_info: account_in) -> Account:
-        if not self.user_info.isSubscribed and len(self.get_all_account()) >= 2:
+        if not self.user_info['isSubscribed'] and len(self.get_all_account()) >= 2:
            raise SubscriptionError('Превышен лимит на счета для аккаунта без подписки')
+        
+        account_info.balance = 0
         acc = self.crud.account.create_account(account_info)
+        if account_info.account_type == 'savings':
+            pass # Нужно создать регулярный платеж
+        if account_info.account_type == 'credit':
+            pass #  poka ne ponal chto zdec delati
+        if account_info.account_type == 'loan_owed': # взять в долг
+            account_info.transaction_info.FROM = acc.id
+            account_info.transaction_info.exchange_rate = 0
+            account_info.transaction_info.type_name = 'Transfer'
+            self.create_transaction(account_info.transaction_info, commit_transaction=False)
+        if account_info.account_type == 'loan_lent': #Дать в долг
+            account_info.transaction_info.TO = acc.id
+            account_info.transaction_info.exchange_rate = 0
+            account_info.transaction_info.type_name = 'Transfer'
+            self.create_transaction(account_info.transaction_info, commit_transaction=False)
         return acc
 
     def get_all_account(self) -> list[Account]:
