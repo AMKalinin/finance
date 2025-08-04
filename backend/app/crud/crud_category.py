@@ -16,7 +16,11 @@ class CRUD_category(CRUD_base):
 
     def create_category(self, category_info: category_in) -> Category:
         db_category = Category(
-            name=category_info.name, type_category=category_info.type_category, user_id=self.user.id
+            name=category_info.name,
+            type_category=category_info.type_category,
+            user_id=self.user.id,
+            parent_id=category_info.parent_category,
+            level=category_info.level
         )  # type: ignore
         self.db.add(db_category)
         return db_category

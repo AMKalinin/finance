@@ -1,9 +1,12 @@
+from uuid import UUID
 from pydantic import BaseModel, Field
 
 
 class category_in(BaseModel):
     name: str
     type_category: str = Field(alias="typeCategory")
+    parent_category: UUID = Field(alias="parentCategory")
+    level: int
 
 
 class category_in_name(BaseModel):
@@ -15,3 +18,6 @@ class category_out(BaseModel):
     id: int
     name: str
     type_category: str = Field(serialization_alias="typeCategory")
+    is_active:bool = True
+    sub_category: list['category_out'] = Field(default=[], serialization_alias="subCategory")
+    level:int

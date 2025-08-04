@@ -1,8 +1,8 @@
 
-from sqlalchemy.orm import PassiveFlag, Session
+from sqlalchemy.orm import  Session
 
 from app.crud import Crud
-from app.err.errors import SubscriptionError
+from app.err.errors import SubscriptionError, MaxCategoryLevelError
 from app.models.account import Account
 from app.schemas.account import (
     account_in,
@@ -122,12 +122,24 @@ class Fin_app:
         pass
 
     def get_all_category(self):
+        category_list = self.crud.category.get_all()
         return self.crud.category.get_all()
 
     @commit
     def create_category(self, category_info: category_in):
-        if not self.user_info.isSubscribed and len(self.get_all_category()) >= 10:
+        all_category = self.get_all_category()
+        if not self.user_info['is_subscribed'] and len(all_category) >= 10:
            raise SubscriptionError('Превышен лимит на категории для аккаунта без подписки')
+        
+        #check level
+        parent_level = -1
+        for category in all_category:
+            if category.id ==  category_info.parent_category:
+                parent_level = category.level
+        if parent_level == 2:
+            raise MaxCategoryLevelError('Превышен лимит вложенности категорий') 
+        category_info.level = parent_level + 1
+        
         category = self.crud.category.create_category(category_info)
         return category
 
