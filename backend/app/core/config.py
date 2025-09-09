@@ -29,7 +29,3 @@ class Settings:
     TOKEN_URL = f'{KEYCLOAK_URL}realms/alkal_realm/protocol/openid-connect/token'
 settings = Settings()
 
-print(settings.AUTHORIZATION_URL)
-print(settings.TOKEN_URL)
-print(settings.KEYCLOAK_URL)
-print(settings.POSTGRES_SERVER)
