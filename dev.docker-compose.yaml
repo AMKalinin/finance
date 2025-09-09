@@ -1,0 +1,104 @@
+#version: '3.8'
+
+services:
+  
+  keycloak-db:
+    image: postgres:15
+    container_name: keycloak-postgres
+    environment:
+      POSTGRES_DB: ${KC_DB_NAME}
+      POSTGRES_USER: ${KC_DB_USERNAME}
+      POSTGRES_PASSWORD: ${KC_DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      KC_DB: ${KC_DB}
+      KC_DB_URL: ${KC_DB_URL} 
+      KC_DB_URL_HOST: postgres  # Link to the Postgres service
+      KC_DB_USERNAME: ${KC_DB_USERNAME} 
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+     
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_PROXY_HEADERS: ${KC_PROXY_HEADERS}
+
+      KC_HTTP_ENABLED: ${KC_HTTP_ENABLED}
+      KC_HOSTNAME_STRICT: ${KC_HOSTNAME_STRICT}
+      KC_HEALTH_ENABLED: ${KC_HEALTH_ENABLED} 
+      KC_HOSTNAME_URL: ${KC_HOSTNAME_URL}
+    command:
+      - start
+    ports:
+      - "8080:8080"
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+ 
+  finsi:
+    build: ./backend
+    container_name: finsi
+    environment:
+      KC_URL: ${KC_URL}
+      KC_CLIENT_SECRET_KEY_FINSI_API: ${KC_CLIENT_SECRET_KEY_FINSI_API} 
+    ports:
+      - "8001:8001"
+      #depends_on:
+      #keycloak:
+      #condition: service_healthy
+    networks:
+      - app-network
+
+  front:
+    build: ./front
+    container_name: front
+    ports:
+      - "5173:5173"
+    volumes:
+      - front_data:/app/dist
+    networks:
+      - app-network
+
+# Nginx как reverse proxy
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+      - front_data:/var/www/myfinsi.ru/dist/
+      - front_data:/usr/share/nginx/html
+    depends_on:
+      # - finsi
+      - keycloak
+    networks:
+      - app-network
+    restart: unless-stopped
+
+
+volumes:
+  postgres_data:
+    name: keycloak_postgres_data
+  front_data:
+    name: front_vue_data
+
+networks:
+  app-network:
+    name: app-network
