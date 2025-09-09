@@ -8,7 +8,7 @@ class transaction_in(BaseModel):
     FROM: UUID | None
     TO: UUID | None
     size: float
-    exchange_rate: float
+    exchange_rate: float = Field(alias="exchangeRate")
     date: datetime.date
     category: int | None
     type_name: str = Field(alias="typeName")
