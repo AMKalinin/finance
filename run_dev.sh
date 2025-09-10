@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-docker-compose -f dev.docker-compose.yml up
+docker-compose -f dev.docker-compose.yaml up
 
 bash -c "cd ./backend/ && poetry run ./run.dev.sh > /dev/null 2>&1 &"
  
