@@ -1,0 +1,58 @@
+#version: '3.8'
+
+services:
+  
+  keycloak-db:
+    image: postgres:15
+    container_name: keycloak-postgres
+    environment:
+      POSTGRES_DB: ${KC_DB_NAME}
+      POSTGRES_USER: ${KC_DB_USERNAME}
+      POSTGRES_PASSWORD: ${KC_DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      KC_DB: ${KC_DB}
+      KC_DB_URL: ${KC_DB_URL} 
+      KC_DB_URL_HOST: postgres  # Link to the Postgres service
+      KC_DB_USERNAME: ${KC_DB_USERNAME} 
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+     
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_PROXY_HEADERS: ${KC_PROXY_HEADERS}
+
+      KC_HTTP_ENABLED: ${KC_HTTP_ENABLED}
+      KC_HOSTNAME_STRICT: ${KC_HOSTNAME_STRICT}
+      KC_HEALTH_ENABLED: ${KC_HEALTH_ENABLED} 
+      KC_HOSTNAME_URL: ${KC_HOSTNAME_URL}
+    command:
+      - start
+    ports:
+      - "8080:8080"
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+
+volumes:
+  postgres_data:
+    name: keycloak_postgres_data
+
+networks:
+  app-network:
+    name: app-network
