@@ -8,7 +8,7 @@ from app.schemas.category import category_in, category_in_name
 class CRUD_category(CRUD_base):
     def get_all(self) -> list[Category]: 
         return self.user.categories.filter(
-                Category.level == 1).filter(
+                Category.level == 0).filter(
                 Category.is_deleted == False).all()  # self.db.query(Category).all()
 
     def get_by_id(self, id: UUID) -> Category:

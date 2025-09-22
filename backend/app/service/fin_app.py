@@ -52,8 +52,8 @@ class Fin_app:
 
     @commit
     def create_account(self, account_info: account_in) -> Account:
-        if not self.user_info['isSubscribed'] and len(self.get_all_account()) >= 2:
-           raise SubscriptionError('Превышен лимит на счета для аккаунта без подписки')
+        # if not self.user_info['isSubscribed'] and len(self.get_all_account()) >= 2:
+        #    raise SubscriptionError('Превышен лимит на счета для аккаунта без подписки')
         
         account_info.balance = 0
         acc = self.crud.account.create_account(account_info)
@@ -121,7 +121,8 @@ class Fin_app:
         acc = self.crud.account.update_primary(account_info)
         return acc
 
-    def delete_account(self, id:UUID):
+    @commit
+    def delete_account(self, id:UUID) -> Account:
         acc = self.crud.account.delete(id)
         return acc
 
@@ -133,8 +134,8 @@ class Fin_app:
     @commit
     def create_category(self, category_info: category_in):
         all_category = self.get_all_category()
-        if not self.user_info['is_subscribed'] and len(all_category) >= 10:
-           raise SubscriptionError('Превышен лимит на категории для аккаунта без подписки')
+        # if not self.user_info['is_subscribed'] and len(all_category) >= 10:
+        #    raise SubscriptionError('Превышен лимит на категории для аккаунта без подписки')
         
         #check level
         parent_level = -1
@@ -175,8 +176,8 @@ class Fin_app:
 
     @commit
     def create_transaction(self, transaction_info: transaction_in):
-        if not self.user_info.isSubscribed and len(self.get_all_transaction_for_period(date.today(), date.today())) >= 10:
-           raise SubscriptionError('Превышен лимит на количество транзакций в день для аккаунта без подписки')
+        # if not self.user_info.isSubscribed and len(self.get_all_transaction_for_period(date.today(), date.today())) >= 10:
+        #    raise SubscriptionError('Превышен лимит на количество транзакций в день для аккаунта без подписки')
         # TODO скорее всего нужно вынести в отдельную функцию
         if transaction_info.type_name == "Debit":
             self.update_account_balance(

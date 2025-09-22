@@ -21,7 +21,7 @@ class account_in(BaseModel):
     is_archived: bool = False
     is_primary: bool = False
     account_type: AccountType
-    transaction_info: transaction_in
+#    transaction_info: transaction_in
 
 
 class account_in_name(BaseAccountModel):
