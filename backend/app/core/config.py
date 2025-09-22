@@ -24,6 +24,8 @@ class Settings:
 
     
     KEYCLOAK_URL = os.environ.get("KC_URL")
+    KEYCLOAK_CLIENT_NAME = os.environ.get("KC_CLIENT_NAME")
+    KEYCLOAK_REALM_NAME = os.environ.get("KC_REALM_NAME")
     KEYCLOAK_SECRET_FINSLI_API = os.environ.get("KC_CLIENT_SECRET_KEY_FINSI_API")
     AUTHORIZATION_URL = f'{KEYCLOAK_URL}realms/alkal_realm/protocol/openid-connect/auth'
     TOKEN_URL = f'{KEYCLOAK_URL}realms/alkal_realm/protocol/openid-connect/token'

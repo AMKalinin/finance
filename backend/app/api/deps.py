@@ -23,8 +23,8 @@ def get_db():
 
 keycloak_openid = KeycloakOpenID(
     server_url=settings.KEYCLOAK_URL,
-    client_id="finsi-client",
-    realm_name="alkal_realm",
+    client_id=settings.KEYCLOAK_CLIENT_NAME,
+    realm_name=settings.KEYCLOAK_REALM_NAME,
     client_secret_key=settings.KEYCLOAK_SECRET_FINSLI_API,
     verify=False
 )
