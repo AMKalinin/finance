@@ -6,9 +6,10 @@ from app.schemas.category import category_in, category_in_name
 
 
 class CRUD_category(CRUD_base):
-    def get_all(self) -> list[Category]:
-        print(self.user.categories.all())
-        return self.user.categories.all()  # self.db.query(Category).all()
+    def get_all(self) -> list[Category]: 
+        return self.user.categories.filter(
+                Category.level == 1).filter(
+                Category.is_deleted == False).all()  # self.db.query(Category).all()
 
     def get_by_id(self, id: UUID) -> Category:
         return self.user.categories.filter(
@@ -26,8 +27,16 @@ class CRUD_category(CRUD_base):
         self.db.add(db_category)
         return db_category
 
-    def delete_category(self):
-        pass
+    def delete_category(self, id: UUID) -> Category:
+        db_category = self.user.categories.filter(
+            Category.id == id
+        ).first()  
+
+        if db_category == None:
+            return db_category
+
+        db_category.is_deleted = True
+        return db_category
 
     def update_name(self, category_info: category_in_name) -> Category | None:
         db_category = self.user.categories.filter(Category.id == category_info.id).first()
@@ -36,7 +45,6 @@ class CRUD_category(CRUD_base):
             return db_category
 
         db_category.name = category_info.name
-        # db.commit()
         return db_category
 
 

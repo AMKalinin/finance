@@ -6,6 +6,7 @@ from sqlalchemy.orm import  Session
 from app.crud import Crud
 from app.err.errors import SubscriptionError, MaxCategoryLevelError
 from app.models.account import Account
+from app.models.category import Category
 from app.schemas.account import (
     account_in,
     account_in_balance,
@@ -147,8 +148,9 @@ class Fin_app:
         category = self.crud.category.create_category(category_info)
         return category
 
-    def delete_category(self):
-        pass
+    def delete_category(self, id:UUID) -> Category:
+        cat = self.crud.category.delete_category(id)
+        return cat
 
     @commit
     def update_category(self, category_info: category_in_name):

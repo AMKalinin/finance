@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import APIRouter, Depends
 
 from app.api import deps
@@ -28,6 +29,10 @@ def update_name(
     return fin_app.update_category(category_info)
 
 
-@router.delete("/{category_id}")
-def delete_category(test: str):
-    return {test}
+@router.delete("/{id}")
+def delete_category(
+    *,
+    fin_app: Fin_app = Depends(deps.get_fin_service),
+    id: UUID
+):
+    return fin_app.delete_category(id) 
