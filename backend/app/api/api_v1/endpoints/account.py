@@ -30,9 +30,13 @@ def create_account(*, fin_app: Fin_app = Depends(deps.get_fin_service), account_
     return fin_app.create_account(account_info)
 
 
-@router.get("/{account_id}", response_model=account_out)
-def get_account_by_id(*, fin_app: Fin_app = Depends(deps.get_fin_service), account_id: UUID):
-    return fin_app.get_account_by_id(account_id)
+@router.get("/{id}", response_model=account_out)
+def get_account_by_id(
+    *,
+    fin_app: Fin_app = Depends(deps.get_fin_service),
+    id: UUID
+):
+    return fin_app.get_account_by_id(id)
 
 
 # @router.put("/{id}/balance", response_model=account_out)
@@ -102,8 +106,10 @@ def update_primary(
     return fin_app.update_account_primary(account_info)
 
 
-
-#
-# @router.delete("/{account_id}")
-# def delete_account(test: str):
-#     return {test}
+@router.delete("/{id}", response_model=account_out)
+def delete_account(
+    *,
+    fin_app: Fin_app = Depends(deps.get_fin_service),
+    id:UUID,
+):
+    return fin_app.delete_account(id)

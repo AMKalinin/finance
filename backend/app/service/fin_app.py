@@ -120,8 +120,10 @@ class Fin_app:
         acc = self.crud.account.update_primary(account_info)
         return acc
 
-    def delete_account(self):
-        pass
+    def delete_account(self, id:UUID):
+        acc = self.crud.account.delete(id)
+        return acc
+
 
     def get_all_category(self):
         category_list = self.crud.category.get_all()

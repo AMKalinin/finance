@@ -15,3 +15,4 @@ class Category(Base):
 
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("user.id"), nullable=False)
     user = relationship("User", back_populates="categories")
+    parent = relationship("Category", remote_side=[id], backref="children")

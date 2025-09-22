@@ -27,6 +27,7 @@ class Account(Base):
     decimal_places: Mapped[int] = mapped_column(default=2)
     is_archived: Mapped[bool] = mapped_column(default=False)
     is_primary: Mapped[bool] = mapped_column(default=False)
+    is_deleted: Mapped[bool] = mapped_column(default=False)
 
     account_type: Mapped[AccountType] = mapped_column(Enum(AccountType), nullable=False)
 

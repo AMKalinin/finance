@@ -17,7 +17,7 @@ from app.schemas.account import (
 
 class CRUD_account(CRUD_base):
     def get_all(self) -> list[Account]:
-        return self.user.accounts.all()  # self.db.query(Account).all()
+        return self.user.accounts.filter(Account.is_deleted == False).all()  # self.db.query(Account).all()
 
     def create_account(self, account_info: account_in) -> Account:
         db_account = Account(
@@ -133,8 +133,16 @@ class CRUD_account(CRUD_base):
         db_account.is_primary = account_info.is_primary
         return db_account
 
-    def delete_account(self):
-        pass
+    def delete(self, id: UUID) -> Account:
+        db_account = self.user.accounts.filter(
+            Account.id == id
+        ).first()  # self.db.query(Account).get(account_info.id)
+
+        if db_account == None:
+            return db_account
+
+        db_account.is_deleted = True
+        return db_account
 
 
 # account = CRUD_account()
