@@ -19,6 +19,5 @@ class category_out(BaseModel):
     id: UUID
     name: str
     type_category: str = Field(serialization_alias="typeCategory")
-    is_active:bool = True
     level:int
     children: list['category_out'] = Field(default=[], serialization_alias="subCategory")
