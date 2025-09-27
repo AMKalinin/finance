@@ -8,13 +8,21 @@ from app.schemas.category import category_in, category_in_name
 class CRUD_category(CRUD_base):
     def get_all(self) -> list[Category]: 
         return self.user.categories.filter(
-                Category.level == 0).filter(
-                Category.is_deleted == False).all()  # self.db.query(Category).all()
+                Category.is_deleted == False).all() 
+    
+    def get_all_structured_list(self) -> list[Category]:
+        return self.user.categories.filter(
+                Category.level == 1).filter(
+                Category.is_deleted == False).all()
+
+    #def get_all_flat_list(self)-> list[Category]:
+    #    return self.user.categories.filter
+
 
     def get_by_id(self, id: UUID) -> Category:
         return self.user.categories.filter(
             Category.id == id
-        ).first()  # self.db.query(Category).get(id)
+        ).first()  
 
     def create_category(self, category_info: category_in) -> Category:
         db_category = Category(
@@ -31,11 +39,16 @@ class CRUD_category(CRUD_base):
         db_category = self.user.categories.filter(
             Category.id == id
         ).first()  
-
+        
         if db_category == None:
             return db_category
+        
+        for sub_cat in db_category.children:
+            self.delete_category(sub_cat.id)
 
         db_category.is_deleted = True
+        db_category.old_parent_id = db_category.parent_id 
+        db_category.parent_id = None
         return db_category
 
     def update_name(self, category_info: category_in_name) -> Category | None:

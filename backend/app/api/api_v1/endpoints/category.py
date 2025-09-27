@@ -10,7 +10,7 @@ router = APIRouter()
 
 @router.get("/", response_model=list[category_out])
 def get_all_category(fin_app: Fin_app = Depends(deps.get_fin_service)):
-    return fin_app.get_all_category()
+    return fin_app.get_all_category_structured_list()
 
 
 @router.post("/create", response_model=category_out)

@@ -4,7 +4,7 @@ from datetime import date
 from sqlalchemy.orm import  Session
 
 from app.crud import Crud
-from app.err.errors import SubscriptionError, MaxCategoryLevelError
+from app.err.errors import CreateCategoryError, SubscriptionError, MaxCategoryLevelError
 from app.models.account import Account
 from app.models.category import Category
 from app.schemas.account import (
@@ -126,29 +126,38 @@ class Fin_app:
         acc = self.crud.account.delete(id)
         return acc
 
+    def get_category_by_id(self, id: UUID) -> Category:
+        return self.crud.category.get_by_id(id)
 
     def get_all_category(self):
-        category_list = self.crud.category.get_all()
         return self.crud.category.get_all()
+
+    def get_all_category_structured_list(self) -> list[Category]:
+        return self.crud.category.get_all_structured_list()
+
+    #def get_all_category_flat_list(self) -> list[Category]:
+    #    return self.crud.category.get_all_flat_list()
 
     @commit
     def create_category(self, category_info: category_in):
+        
         all_category = self.get_all_category()
-        # if not self.user_info['is_subscribed'] and len(all_category) >= 10:
-        #    raise SubscriptionError('Превышен лимит на категории для аккаунта без подписки')
-        
-        #check level
-        parent_level = -1
-        for category in all_category:
-            if category.id ==  category_info.parent_category:
-                parent_level = category.level
-        if parent_level == 2:
-            raise MaxCategoryLevelError('Превышен лимит вложенности категорий') 
-        category_info.level = parent_level + 1
-        
+        if len(all_category) >= 10:
+            raise SubscriptionError('Ограничения пописки')
+
+        if category_info.parent_category:
+            parent_category = self.get_category_by_id(category_info.parent_category)
+            if parent_category:
+                if parent_category.is_deleted:
+                    raise CreateCategoryError('Родительская категория удалена')
+                if parent_category.level == 3:
+                    raise MaxCategoryLevelError('Превышен лимит вложенности категорий')
+                category_info.level = parent_category.level + 1
+                category_info.type_category = parent_category.type_category 
         category = self.crud.category.create_category(category_info)
         return category
-
+    
+    @commit
     def delete_category(self, id:UUID) -> Category:
         cat = self.crud.category.delete_category(id)
         return cat
