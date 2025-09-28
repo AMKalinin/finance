@@ -1,11 +1,12 @@
 from sqlalchemy.orm import Session  # noqa
 
-from app.models.account import Account  # noqa
-from app.models.category import Category  # noqa
-from app.models.transaction import Transaction  # noqa
-from app.models.type_category import Type_category
-from app.models.type_transaction import Type_transaction  # noqa
-from app.models.user import User
+from app.models.account import Account 
+from app.models.category import Category, Category_type 
+from app.models.transaction import Transaction, Transaction_type, Transaction_status, Split_type  
+from app.models.user import User, Subscription_type
+from app.models.transaction_distribution_user import Transaction_distribution_user, Distribution_status, Distribution_user_role
+from app.models.position import Position
+from app.models.position_user import Position_user
 
 from .base_class import Base
 from .session import engine
@@ -13,33 +14,89 @@ from .session import engine
 
 def init_db():
     Base.metadata.create_all(engine)  # type: ignore
-    # with Session(engine) as session:
-    #     with session.begin():
-    #         type_debit = (
-    #             session.query(Type_transaction).filter(Type_transaction.name == "Debit").first()
-    #         )
-    #         if not type_debit:
-    #             type_debit = Type_transaction(
-    #                 name="Debit", description="Debit / списание"
-    #             )  # type: ignore
-    #             session.add(type_debit)
-    #
-    #             type_transfer = Type_transaction(
-    #                 name="Transfer", description="Transfer / перевод"
-    #             )  # type: ignore
-    #             session.add(type_transfer)
-    #
-    #             type_adding = Type_transaction(
-    #                 name="Adding", description="Adding / пополнение"
-    #             )  # type: ignore
-    #             session.add(type_adding)
-    #
-    #             type_c_debit = Type_category(
-    #                 name="Debit", description="Debit / списание"
-    #             )  # type: ignore
-    #             session.add(type_c_debit)
-    #
-    #             type_c_adding = Type_category(
-    #                 name="Adding", description="Adding / пополнение"
-    #             )  # type: ignore
-    #             session.add(type_c_adding)
+    with Session(engine) as session:
+        with session.begin():
+            type_debit = (
+                session.query(Transaction_type).filter(Transaction_type.name == "Debit").first()
+            )
+            if type_debit:
+                return 
+
+            type_c_debit = Category_type(
+                name="Debit", description="Debit / списание"
+            )  # type: ignore
+            session.add(type_c_debit)
+
+            type_c_adding = Category_type(
+                name="Adding", description="Adding / пополнение"
+            )  # type: ignore
+            session.add(type_c_adding)
+
+
+
+            type_debit = Transaction_type(
+                name="Debit", description="Debit / списание"
+            )  # type: ignore
+            session.add(type_debit)
+
+            type_transfer = Transaction_type(
+                name="Transfer", description="Transfer / перевод"
+            )  # type: ignore
+            session.add(type_transfer)
+
+            type_adding = Transaction_type(
+                name="Adding", description="Adding / пополнение"
+            )  # type: ignore
+            session.add(type_adding)
+
+
+            transaction_status_pending = Transaction_status(
+                    name='pending', description='Ожидание'
+                    )
+            session.add(transaction_status_pending)
+            transaction_status_partially_paid = Transaction_status(
+                    name='partially_paid', description='Транзакция частично закрыта'
+                    )
+            session.add(transaction_status_partially_paid)
+            transaction_status_settled = Transaction_status(
+                    name='settled', description='Транзаеция завершена'
+                    )
+            session.add(transaction_status_settled)
+
+
+            split_type_equal = Split_type(
+                    name='equal', description='Поровну'
+                    )
+            session.add(split_type_equal)
+            split_type_percentage = Split_type(
+                    name='percentage', description='Проценты'
+                    )
+            session.add(split_type_percentage)
+            split_type_amount = Split_type(
+                    name='amount', description='Конкретные суммы'
+                    )
+            session.add(split_type_amount)
+            split_type_position = Split_type(
+                    name='position', description='По позициям'
+                    )
+            session.add(split_type_position)
+
+
+            distribution_status_pending = Distribution_status(
+                    name='pending', description='Ожидание'
+                    )
+            session.add(distribution_status_pending )
+            distribution_status_settled = Distribution_status(
+                    name='settled', description='Распределение завершено'
+                    )
+            session.add(distribution_status_settled)
+
+
+            subscription_type_free = Subscription_type(
+                    name='free', description='Бесплатный тип подписки'
+                    )
+            session.add(subscription_type_free)
+            subscription_type_premium = Subscription_type(
+                    name='premium', description='Премиум тип подписки'
+                    )
+            session.add(subscription_type_premium )

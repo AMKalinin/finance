@@ -6,10 +6,16 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base_class import Base
 
 
+class Category_type(Base):
+    # Пополнение\ списание \ перевод
+    name: Mapped[str] = mapped_column(primary_key=True)
+    description: Mapped[str] = mapped_column(Text)
+
+
 class Category(Base):
     id: Mapped[uuid.UUID] = mapped_column(types.Uuid, primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(Text)
-    type_category: Mapped[str] = mapped_column(String(10), nullable=False)
+    type: Mapped[str] = mapped_column(ForeignKey('category_type.name'), nullable=False)
     parent_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("category.id"), nullable=True)
     old_parent_id: Mapped[uuid.UUID] = mapped_column(types.Uuid, nullable=True)
     level: Mapped[int] = mapped_column()
