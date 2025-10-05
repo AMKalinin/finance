@@ -6,7 +6,7 @@ from keycloak import KeycloakOpenID
 from app.core.config import settings
 from app.db.session import SessionLocal
 from app.service.fin_app import Fin_app
-
+from app.service.user_service import User_service
 
 def get_db():
     try:
@@ -48,7 +48,6 @@ def get_current_user(token: str):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-
 def get_fin_service(token: str = Depends(oauth2_scheme)) -> Generator[Fin_app, ..., ...]:
      try:
         user = get_current_user(token)
@@ -56,4 +55,13 @@ def get_fin_service(token: str = Depends(oauth2_scheme)) -> Generator[Fin_app, .
         f_app = Fin_app(db, user)
         yield f_app
      finally:
+        db.close()
+
+def get_user_service(token:str = Depends(oauth2_scheme)) -> Generator[User_service, ..., ...]:
+    try:
+        user = get_current_user(token)
+        db = next(get_db())
+        user_service = User_service(db, user)
+        yield user_service
+    finally:
         db.close()

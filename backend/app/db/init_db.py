@@ -4,6 +4,7 @@ from app.models.account import Account
 from app.models.category import Category, Category_type 
 from app.models.transaction import Transaction, Transaction_type, Transaction_status, Split_type  
 from app.models.user import User, Subscription_type
+from app.models.friends import  Friends , Friends_status
 from app.models.transaction_distribution_user import Transaction_distribution_user, Distribution_status, Distribution_user_role
 from app.models.position import Position
 from app.models.position_user import Position_user
@@ -99,4 +100,18 @@ def init_db():
             subscription_type_premium = Subscription_type(
                     name='premium', description='Премиум тип подписки'
                     )
-            session.add(subscription_type_premium )
+            session.add(subscription_type_premium)
+
+
+            friends_status_pending_sent = Friends_status(
+                    name="pending_sent", description="Отправитель ожидает ответ"
+                    )
+            session.add(friends_status_pending_sent)
+            friends_status_accepted = Friends_status(
+                    name="accept", description="Подтверждённая дружба"
+                    )
+            session.add(friends_status_accepted)
+            friends_status_pending_received = Friends_status(
+                    name="pending_received", description="Ожидание ответа от получателя"
+                    )
+            session.add(friends_status_pending_received)

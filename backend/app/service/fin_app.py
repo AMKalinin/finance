@@ -4,6 +4,7 @@ from datetime import date
 from sqlalchemy.orm import  Session
 
 from app.crud import Crud
+from app.core.utils import commit
 from app.err.errors import CreateCategoryError, SubscriptionError, MaxCategoryLevelError
 from app.models.account import Account
 from app.models.category import Category
@@ -28,20 +29,6 @@ from app.schemas.transaction import (
     transaction_in_type,
 )
 
-
-def commit(func):
-    def wrapper(self, *args, **kwargs):
-        flag = True
-        if "commit_transaction" in kwargs:
-            flag = kwargs["commit_transaction"]
-            kwargs.pop("commit_transaction")
-        res = func(self, *args, **kwargs)
-        if flag:
-            self.db.commit()
-        # self.db.refresh(res)
-        return res
-
-    return wrapper
 
 
 class Fin_app:

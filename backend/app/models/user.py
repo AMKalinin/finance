@@ -18,7 +18,6 @@ class User(Base):
     description: Mapped[str] = mapped_column(Text)
     subscription_type: Mapped[str] = mapped_column(ForeignKey('subscription_type.name'), default='free')
     subscription_expiry: Mapped[date] = mapped_column(nullable=True)
-    friends_json: Mapped[str] = mapped_column(Text)
     accounts = relationship("Account", back_populates="user", lazy="dynamic")
     categories = relationship("Category", back_populates="user", lazy="dynamic")
     position_shares = relationship("Position_user", back_populates="user", lazy="dynamic")
@@ -27,11 +26,6 @@ class User(Base):
         back_populates="user",
         lazy="dynamic"
     )
-    #transactions = relationship("Transaction", back_populates="user", lazy="dynamic")
-    def get_friends_array(self):
-        if self.friends_json:
-            return json.loads(self.friends_json)
-        return []
 
-    def set_friends_array(self, array):
-        self.friends_json = json.dumps(array)
+    #transactions = relationship("Transaction", back_populates="user", lazy="dynamic")
+    friends = relationship("Friends",foreign_keys='Friends.user2_id', back_populates="user2")
