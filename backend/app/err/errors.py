@@ -10,3 +10,7 @@ class MaxCategoryLevelError(Exception):
 class CreateCategoryError(Exception):
     '''Ошибка при создании категории'''
     pass
+
+class AcceptFriendError(Exception):
+    '''Ошибка подтверждения дружбы'''
+    pass
