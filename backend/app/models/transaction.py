@@ -34,7 +34,8 @@ class Transaction(Base):
     date: Mapped[datetime.date] = mapped_column(default=datetime.date.today, nullable=False)
     description: Mapped[str] = mapped_column(Text)
     split_type: Mapped[str] = mapped_column(ForeignKey("split_type.name"), nullable=True)
-    transaction_status: Mapped[str] = mapped_column(ForeignKey("transaction_status.name"), nullable=True)
+    status: Mapped[str] = mapped_column(ForeignKey("transaction_status.name"), nullable=True) 
+    related_transactions: Mapped[uuid.UUID] = mapped_column(ForeignKey("transaction.id"))
 
     transaction_distribution_user = relationship("Transaction_distribution_user", back_populates="transactions")
     positions = relationship("Position", back_populates="transactions")

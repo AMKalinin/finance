@@ -3,6 +3,7 @@ from uuid import UUID
 
 from app.crud.crud_base import CRUD_base
 from app.models.transaction import Transaction
+from app.models.transaction_distribution_user import Transaction_distribution_user 
 
 # from app.models.type_transaction import Type_transaction  # noqa
 from app.schemas.transaction import (
@@ -20,19 +21,35 @@ class CRUD_transaction(CRUD_base):
         db_transaction = Transaction(
             FROM=transaction_info.FROM,
             TO=transaction_info.TO,
-            size=transaction_info.size,
+            category=transaction_info.category,
+            type=transaction_info.type,
+            debit_size=transaction_info.debit_size,
+            credit_size=transaction_info.credit_size,
             exchange_rate=transaction_info.exchange_rate,
             date=transaction_info.date,
-            category=transaction_info.category,
-            type_name=transaction_info.type_name,
-            description=transaction_info.description,
-            user_id=self.user.id,
-        )  # type: ignore
+            split_type=transaction_info.split_type,
+            status=transaction_info.status,
+            related_transactions=transaction_info.related_transactions,
+            description=transaction_info.description
+        )  # type: ignore 
         self.db.add(db_transaction)
+
+        for distribution in transaction_info.distributions:
+            role = 'participant'
+            if distribution.user_id == self.user.id:
+                role = 'owner'
+            db_tr_distr = Transaction_distribution_user(
+                user_id=distribution.user_id,
+                transaction_id=db_transaction.id,
+                distribution_user_role=role,
+                size=distribution.size,
+            )
+            self.db.add(db_tr_distr)
         return db_transaction
 
     def get_by_id(self, id: UUID) -> Transaction:
-        return self.user.transactions.filter(Transaction.id == id).first()
+        return self.user.transaction_distribution_user.filter(Transaction_distribution_user.transaction_id == id).first()
+        #return self.user.transactions.filter(Transaction.id == id).first()
 
     def get_all_transaction(self) -> list[Transaction]:
         return self.user.transactions.all()  # self.db.query(Transaction).all()

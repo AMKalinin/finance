@@ -18,35 +18,35 @@ def init_db():
     with Session(engine) as session:
         with session.begin():
             type_debit = (
-                session.query(Transaction_type).filter(Transaction_type.name == "Debit").first()
+                session.query(Transaction_type).filter(Transaction_type.name == "debit").first()
             )
             if type_debit:
                 return 
 
             type_c_debit = Category_type(
-                name="Debit", description="Debit / списание"
+                name="debit", description="Debit / списание"
             )  # type: ignore
             session.add(type_c_debit)
 
             type_c_adding = Category_type(
-                name="Adding", description="Adding / пополнение"
+                name="adding", description="Adding / пополнение"
             )  # type: ignore
             session.add(type_c_adding)
 
 
 
             type_debit = Transaction_type(
-                name="Debit", description="Debit / списание"
+                name="debit", description="Debit / списание"
             )  # type: ignore
             session.add(type_debit)
 
             type_transfer = Transaction_type(
-                name="Transfer", description="Transfer / перевод"
+                name="transfer", description="Transfer / перевод"
             )  # type: ignore
             session.add(type_transfer)
 
             type_adding = Transaction_type(
-                name="Adding", description="Adding / пополнение"
+                name="adding", description="Adding / пополнение"
             )  # type: ignore
             session.add(type_adding)
 

@@ -175,29 +175,30 @@ class Fin_app:
         # if not self.user_info.isSubscribed and len(self.get_all_transaction_for_period(date.today(), date.today())) >= 10:
         #    raise SubscriptionError('Превышен лимит на количество транзакций в день для аккаунта без подписки')
         # TODO скорее всего нужно вынести в отдельную функцию
-        if transaction_info.type_name == "Debit":
+        if transaction_info.type == "debit":
             self.update_account_balance(
                 account_in_balance(
-                    id=transaction_info.FROM, operation="minus", balance=transaction_info.size
+                    id=transaction_info.FROM, operation="minus", balance=transaction_info.debit_size
                 ),
                 commit_transaction=False,
             )
-        elif transaction_info.type_name == "Transfer":
+        elif transaction_info.type == "transfer":
             self.update_account_balance(
                 account_in_balance(
-                    id=transaction_info.FROM, operation="minus", balance=transaction_info.size
+                    id=transaction_info.FROM, operation="minus", balance=transaction_info.debit_size
                 ),
                 commit_transaction=False,
             )
-            size = transaction_info.size * 1 # transaction_info.exchange_rate
+            #size = transaction_info.size * 1 # transaction_info.exchange_rate
+            #transaction_info.exchange_rate
             self.update_account_balance(
-                account_in_balance(id=transaction_info.TO, operation="plus", balance=size),
+                account_in_balance(id=transaction_info.TO, operation="plus", balance=transaction_info.credit_size),
                 commit_transaction=False,
             )
-        elif transaction_info.type_name == "Adding":
+        elif transaction_info.type == "adding":
             self.update_account_balance(
                 account_in_balance(
-                    id=transaction_info.TO, operation="plus", balance=transaction_info.size
+                    id=transaction_info.TO, operation="plus", balance=transaction_info.debit_size
                 ),
                 commit_transaction=False,
             )
@@ -206,16 +207,16 @@ class Fin_app:
         db_to = self.crud.account.get_by_id(transaction_info.TO)
         db_category = self.crud.category.get_by_id(transaction_info.category)
 
-        match transaction_info.type_name:
-            case "Debit":
+        match transaction_info.type:
+            case "debit":
                 transaction_info.FROM = db_from.id
                 transaction_info.TO = None
                 transaction_info.category = db_category.id
-            case "Transfer":
+            case "transfer":
                 transaction_info.FROM = db_from.id
                 transaction_info.TO = db_to.id
                 transaction_info.category = None
-            case "Adding":
+            case "adding":
                 transaction_info.FROM = None
                 transaction_info.TO = db_to.id
                 transaction_info.category = db_category.id
