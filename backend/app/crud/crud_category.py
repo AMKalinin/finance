@@ -27,7 +27,7 @@ class CRUD_category(CRUD_base):
     def create_category(self, category_info: category_in) -> Category:
         db_category = Category(
             name=category_info.name,
-            type_category=category_info.type_category,
+            type=category_info.type,
             user_id=self.user.id,
             parent_id=category_info.parent_category,
             level=category_info.level

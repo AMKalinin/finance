@@ -33,18 +33,20 @@ class CRUD_transaction(CRUD_base):
             description=transaction_info.description
         )  # type: ignore 
         self.db.add(db_transaction)
+        self.db.flush()
 
         for distribution in transaction_info.distributions:
             role = 'participant'
-            if distribution.user_id == self.user.id:
-                role = 'owner'
+            #if distribution.user_id == self.user.id:
+            role = 'owner'
             db_tr_distr = Transaction_distribution_user(
-                user_id=distribution.user_id,
+                user_id=self.user.id,
                 transaction_id=db_transaction.id,
                 distribution_user_role=role,
                 size=distribution.size,
             )
-            self.db.add(db_tr_distr)
+            self.db.bulk_save_objects([db_transaction, db_tr_distr])
+            #self.db.add(db_tr_distr)
         return db_transaction
 
     def get_by_id(self, id: UUID) -> Transaction:
@@ -52,7 +54,8 @@ class CRUD_transaction(CRUD_base):
         #return self.user.transactions.filter(Transaction.id == id).first()
 
     def get_all_transaction(self) -> list[Transaction]:
-        return self.user.transactions.all()  # self.db.query(Transaction).all()
+        #print([distr.transactions for distr in self.user.transaction_distribution_user])
+        return [distr.transactions for distr in self.user.transaction_distribution_user]#self.user.transactions.all()  # self.db.query(Transaction).all()
 
     def get_all_transaction_by_type(self, type_name: str) -> list[Transaction]:
         return self.user.transactions.filter(Transaction.type_name == type_name).all()

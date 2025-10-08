@@ -140,7 +140,7 @@ class Fin_app:
                 if parent_category.level == 3:
                     raise MaxCategoryLevelError('Превышен лимит вложенности категорий')
                 category_info.level = parent_category.level + 1
-                category_info.type_category = parent_category.type_category 
+                category_info.type = parent_category.type
         category = self.crud.category.create_category(category_info)
         return category
     

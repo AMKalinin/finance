@@ -24,7 +24,7 @@ class User(Base):
     transaction_distribution_user = relationship(
         "Transaction_distribution_user",
         back_populates="user",
-        lazy="dynamic"
+        #lazy="dynamic"
     )
 
     #transactions = relationship("Transaction", back_populates="user", lazy="dynamic")

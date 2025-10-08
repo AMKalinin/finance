@@ -11,19 +11,19 @@ class Distribution(BaseModel):
 
 
 class transaction_in(BaseModel):
-    FROM: UUID | None
-    TO: UUID | None
-    category: UUID | None
-    type: Literal['debit', 'adding', 'transfer'] | None = Field(alias="typeName")
-    debit_size: float
-    credit_size: float | None
-    exchange_rate: float = Field(alias="exchangeRate")
+    FROM: UUID | None = Field(default=None)
+    TO: UUID | None = Field(default=None)
+    category: UUID | None = Field(default=None)
+    type: Literal['debit', 'adding', 'transfer'] | None = Field(default=None, alias="typeName")
+    debit_size: float = Field(alias="debitSize")
+    credit_size: float | None = Field(default=None, alias="creditSize")
+    exchange_rate: float | None = Field(default=None, alias="exchangeRate")
     date: datetime.date
     description: str | None
-    split_type: Literal['equal', 'percentage', 'amount', 'position']
+    split_type: Literal['equal', 'percentage', 'amount', 'position'] | None = Field(default=None, alias="splitType")
     status: Literal['pending', 'partially_paid', 'settled']
-    related_transactions: UUID | None
-    distributions: list[Distribution]
+    related_transactions: UUID | None = Field(default=None, alias="relatedTransaction")
+    distributions: list[Distribution] = Field(min_length=1)
 
 
 class transaction_in_type(BaseModel):
@@ -60,11 +60,16 @@ class transaction_in_delete(BaseModel):
 
 class transaction_out(BaseModel):
     id: UUID
-    FROM: UUID | None
-    TO: UUID | None
-    size: float
-    exchange_rate: float
+    FROM: UUID | None = Field(default=None)
+    TO: UUID | None = Field(default=None)
+    category: UUID | None = Field(default=None)
+    type: Literal['debit', 'adding', 'transfer'] | None
+    debit_size: float 
+    credit_size: float | None
+    exchange_rate: float | None
     date: datetime.date
-    category: UUID | None
-    type_name: str = Field(serialization_alias="typeName")
-    description: str
+    description: str | None
+    split_type: Literal['equal', 'percentage', 'amount', 'position'] | None
+    status: Literal['pending', 'partially_paid', 'settled']
+    related_transactions: UUID | None
+    #distributions: list[Distribution] = Field(min_length=1)
