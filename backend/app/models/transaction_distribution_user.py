@@ -20,7 +20,7 @@ class Transaction_distribution_user(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('user.id'), primary_key=True)
     distribution_user_role: Mapped[str] = mapped_column(ForeignKey('distribution_user_role.name'))
     is_deleted: Mapped[bool] = mapped_column(default=False)
-    size: Mapped[float] = mapped_column()
+    size: Mapped[float] = mapped_column(nullable=True)
     #fraction: Mapped[bool] = mapped_column(default=False)
 
     transactions = relationship("Transaction", back_populates="transaction_distribution_user")

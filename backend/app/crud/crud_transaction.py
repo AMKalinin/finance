@@ -35,18 +35,28 @@ class CRUD_transaction(CRUD_base):
         self.db.add(db_transaction)
         self.db.flush()
 
+        db_objects = [db_transaction]
+
+        
+        size = transaction_info.debit_size
         for distribution in transaction_info.distributions:
-            role = 'participant'
-            #if distribution.user_id == self.user.id:
-            role = 'owner'
-            db_tr_distr = Transaction_distribution_user(
+            if distribution.role == 'owner':
+                size = distribution.size
+                continue
+            db_objects.append(Transaction_distribution_user(
                 user_id=self.user.id,
                 transaction_id=db_transaction.id,
-                distribution_user_role=role,
-                size=distribution.size,
-            )
-            self.db.bulk_save_objects([db_transaction, db_tr_distr])
-            #self.db.add(db_tr_distr)
+                distribution_user_role=distribution.distribution_user_role,
+                size=distribution.size
+            ))
+
+        db_objects.append(Transaction_distribution_user(
+            user_id=self.user.id,
+            transaction_id=db_transaction.id,
+            distribution_user_role='owner',
+            size=size
+        ))
+        self.db.bulk_save_objects(db_objects)
         return db_transaction
 
     def get_by_id(self, id: UUID) -> Transaction:
@@ -54,7 +64,7 @@ class CRUD_transaction(CRUD_base):
         #return self.user.transactions.filter(Transaction.id == id).first()
 
     def get_all_transaction(self) -> list[Transaction]:
-        #print([distr.transactions for distr in self.user.transaction_distribution_user])
+        print([vars(distr.transactions.transaction_distribution_user[0]) for distr in self.user.transaction_distribution_user])
         return [distr.transactions for distr in self.user.transaction_distribution_user]#self.user.transactions.all()  # self.db.query(Transaction).all()
 
     def get_all_transaction_by_type(self, type_name: str) -> list[Transaction]:

@@ -172,33 +172,42 @@ class Fin_app:
 
     @commit
     def create_transaction(self, transaction_info: transaction_in):
-        # if not self.user_info.isSubscribed and len(self.get_all_transaction_for_period(date.today(), date.today())) >= 10:
-        #    raise SubscriptionError('Превышен лимит на количество транзакций в день для аккаунта без подписки')
+        #if self.crud.user.get_info().subscription_type=='free' and len(self.get_all_transaction_for_period(date.today(), date.today())) >= 10:
+         #   raise SubscriptionError('Превышен лимит на количество транзакций в день для аккаунта без подписки')
         # TODO скорее всего нужно вынести в отдельную функцию
         if transaction_info.type == "debit":
             self.update_account_balance(
                 account_in_balance(
-                    id=transaction_info.FROM, operation="minus", balance=transaction_info.debit_size
+                    id=transaction_info.FROM,
+                    operation="minus",
+                    balance=transaction_info.debit_size
                 ),
                 commit_transaction=False,
             )
         elif transaction_info.type == "transfer":
             self.update_account_balance(
                 account_in_balance(
-                    id=transaction_info.FROM, operation="minus", balance=transaction_info.debit_size
+                    id=transaction_info.FROM,
+                    operation="minus",
+                    balance=transaction_info.debit_size
                 ),
                 commit_transaction=False,
             )
             #size = transaction_info.size * 1 # transaction_info.exchange_rate
-            #transaction_info.exchange_rate
+            transaction_info.exchange_rate = transaction_info.credit_size / transaction_info.debit_size
             self.update_account_balance(
-                account_in_balance(id=transaction_info.TO, operation="plus", balance=transaction_info.credit_size),
+                account_in_balance(
+                    id=transaction_info.TO,
+                    operation="plus",
+                    balance=transaction_info.credit_size),
                 commit_transaction=False,
             )
         elif transaction_info.type == "adding":
             self.update_account_balance(
                 account_in_balance(
-                    id=transaction_info.TO, operation="plus", balance=transaction_info.debit_size
+                    id=transaction_info.TO,
+                    operation="plus",
+                    balance=transaction_info.debit_size
                 ),
                 commit_transaction=False,
             )
