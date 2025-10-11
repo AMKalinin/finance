@@ -234,11 +234,6 @@ class Fin_app:
         return transaction
 
     @commit
-    def update_transaction_type(self, transaction_info: transaction_in_type):
-        transaction = self.crud.transaction.update_type(transaction_info)
-        return transaction
-
-    @commit
     def update_transaction_date(self, transaction_info: transaction_in_date):
         transaction = self.crud.transaction.update_date(transaction_info)
         return transaction

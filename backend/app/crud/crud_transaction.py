@@ -102,19 +102,7 @@ class CRUD_transaction(CRUD_base):
             if from_date <= distr.transactions.date <= to_date and distr.transactions.type == type_name
         ]
         return res
-
-    def update_type(self, transaction_info: transaction_in_type) -> Transaction:
-        db_transaction = self.db.query(Transaction).get(transaction_info.id)
-        if db_transaction == None:
-            return db_transaction
-
-        db_transaction.type = transaction_info.type
-        db_transaction.FROM = transaction_info.FROM
-        db_transaction.TO = transaction_info.TO
-        db_transaction.category = transaction_info.category
-
-        return db_transaction
-
+ 
     def update_size(self, transaction_info: transaction_in_size) -> Transaction:
         db_transaction = self.db.query(Transaction).get(transaction_info.id)
 

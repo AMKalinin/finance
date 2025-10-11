@@ -54,15 +54,6 @@ def create_transaction(
     return fin_app.create_transaction(transaction_info)
 
 
-# @router.put("/{id}/type", response_model=transaction_out)
-def update_type(
-    *,
-    fin_app: Fin_app = Depends(deps.get_fin_service),
-    transaction_info: transaction_in_type = Depends(transaction_in_type),
-):
-    return fin_app.update_transaction_type(transaction_info)
-
-
 @router.put("/{id}/date", response_model=transaction_out)
 def update_date(
     *,
