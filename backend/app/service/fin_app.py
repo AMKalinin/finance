@@ -157,9 +157,6 @@ class Fin_app:
     def get_all_transaction(self):
         return self.crud.transaction.get_all_transaction()
 
-    def get_all_transaction_by_type(self, operation_type: str):
-        return self.crud.transaction.get_all_transaction_by_type(operation_type)
-
     def get_all_transaction_for_period(self, from_date: date, to_date: date):
         return self.crud.transaction.get_all_transaction_for_period(from_date, to_date)
 

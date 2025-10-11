@@ -80,10 +80,7 @@ class CRUD_transaction(CRUD_base):
         return self.user.transaction_distribution_user.filter(Transaction_distribution_user.transaction_id == id).first().transactions
 
     def get_all_transaction(self) -> list[Transaction]:
-        return [distr.transactions for distr in self.user.transaction_distribution_user] #self.user.transactions.all()  # self.db.query(Transaction).all()
-
-    def get_all_transaction_by_type(self, type_name: str) -> list[Transaction]:
-        return self.user.transactions.filter(Transaction.type_name == type_name).all()
+        return [distr.transactions for distr in self.user.transaction_distribution_user]
 
     def get_all_transaction_for_period(self, from_date: date, to_date: date) -> list[Transaction]:
         res = [
