@@ -67,17 +67,31 @@ class CRUD_transaction(CRUD_base):
             self.db.add(db_distr)
         return db_distr
 
+    def get_distribution(self, transaction_id:UUID) -> Transaction_distribution_user:
+        res = [
+            distr
+            for distr in self.user.transaction_distribution_user
+            if  distr.transaction_id == transaction_id
+        ]
+        return res[0]
+
+    def update_distribution(self, distribution_info:distribution_in) -> Transaction_distribution_user:
+        db_distr = self.db.query(Transaction_distribution_user).get((distribution_info.user_id, distribution_info.transaction_id))
+        if distribution_info.size:
+            db_distr.size = distribution_info.size
+        return db_distr
+
     def delete_distribution(self, distribution_info:distribution_in) -> None:
         db_distr = self.db.query(Transaction_distribution_user).get((distribution_info.user_id, distribution_info.transaction_id))
         self.db.delete(db_distr)
-
-    def update_distribution_size(self, distribution_info:distribution_in) -> Transaction_distribution_user:
-        db_distr = self.db.query(Transaction_distribution_user).get((distribution_info.user_id, distribution_info.transaction_id))
-        db_distr.size = distribution_info.size
-        return db_distr
-
+ 
     def get_by_id(self, id: UUID) -> Transaction:
-        return self.user.transaction_distribution_user.filter(Transaction_distribution_user.transaction_id == id).first().transactions
+        res = [
+            distr.transactions 
+            for distr in self.user.transaction_distribution_user
+            if  distr.transaction_id == id
+        ]
+        return res[0]
 
     def get_all_transaction(self) -> list[Transaction]:
         return [distr.transactions for distr in self.user.transaction_distribution_user]

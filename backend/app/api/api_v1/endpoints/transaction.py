@@ -6,6 +6,8 @@ from fastapi import APIRouter, Depends
 from app.api import deps
 from app.schemas.account import account_in_balance
 from app.schemas.transaction import (
+    distribution_in,
+    distribution_out,
     transaction_in,
     transaction_in_date,
     transaction_in_delete,
@@ -48,6 +50,23 @@ def create_transaction(
 ):
     return fin_app.create_transaction(transaction_info)
 
+@router.post("/distribution", response_model=distribution_out)
+def add_distribution(
+    *, fin_app: Fin_app = Depends(deps.get_fin_service), distribution_info: distribution_in
+):
+    return fin_app.transaction_add_distribution(distribution_info)
+
+@router.patch("/distribution", response_model=distribution_out)
+def update_distribution(
+    *, fin_app: Fin_app = Depends(deps.get_fin_service), distribution_info: distribution_in
+):
+    return fin_app.transaction_update_distribution(distribution_info)
+
+@router.delete("/distribution", response_model=distribution_out)
+def delete_distribution(
+    *, fin_app: Fin_app = Depends(deps.get_fin_service), distribution_info: distribution_in
+):
+    return fin_app.transaction_delete_distribution(distribution_info)
 
 @router.put("/{id}/date", response_model=transaction_out)
 def update_date(

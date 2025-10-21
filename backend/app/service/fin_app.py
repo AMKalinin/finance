@@ -21,6 +21,7 @@ from app.schemas.account import (
 )
 from app.schemas.category import category_in, category_in_name
 from app.schemas.transaction import (
+    distribution_in,
     transaction_in,
     transaction_in_date,
     transaction_in_delete,
@@ -222,11 +223,13 @@ class Fin_app:
                 transaction_info.FROM = db_from.id
                 transaction_info.TO = db_to.id
                 transaction_info.category = None
+                transaction_info.distributions = []
             case "adding":
                 transaction_info.FROM = None
                 transaction_info.TO = db_to.id
                 transaction_info.category = db_category.id
-
+                transaction_info.distributions = []
+        
         transaction = self.crud.transaction.create_transaction(transaction_info)
         return transaction
 
@@ -246,25 +249,45 @@ class Fin_app:
 
     @commit
     def delete_transaction(self, id: UUID):
-        transaction = self.crud.transaction.delete(id)
-        if transaction.type_name == "Debit":
+        distr = self.crud.transaction.get_distribution(id)
+        self.crud.transaction.delete_distribution(id)
+        if distr.distribution_user_role != 'owner':
+            return 
+
+        if transaction.type == "debit":
             self.update_account_balance(
-                account_in_balance(id=transaction.FROM, operation="plus", balance=transaction.size),
+                account_in_balance(id=transaction.FROM, operation="plus", balance=transaction.debit_size),
                 commit_transaction=False,
             )
-        elif transaction.type_name == "Transfer":
+        elif transaction.type == "transfer":
             self.update_account_balance(
-                account_in_balance(id=transaction.FROM, operation="plus", balance=transaction.size),
+                account_in_balance(id=transaction.FROM, operation="plus", balance=transaction.debit_size),
                 commit_transaction=False,
             )
-            size = transaction.size * transaction.exchange_rate
             self.update_account_balance(
-                account_in_balance(id=transaction.TO, operation="minus", balance=size),
+                account_in_balance(id=transaction.TO, operation="minus", balance=transaction.credit_size),
                 commit_transaction=False,
             )
-        elif transaction.type_name == "Adding":
+        elif transaction.type == "adding":
             self.update_account_balance(
-                account_in_balance(id=transaction.TO, operation="minuse", balance=transaction.size),
+                account_in_balance(id=transaction.TO, operation="minus", balance=transaction.credit_size),
                 commit_transaction=False,
+            )
+        for distr in transaction.transaction_distribution_user:
+            self.transaction_delete_distribution(
+                distribution_in(userId=distr.user_id, transactionId=distr.transaction_id),
+                commit_transaction=False
             )
         return transaction
+
+    @commit
+    def transaction_add_distribution(self, distribution_info:distribution_in):
+        return self.crud.transaction.create_distribution(distribution_info, save_to_db=True)
+
+    @commit
+    def transaction_update_distribution(self, distribution_info:distribution_in):
+        return self.crud.transaction.update_distribution(distribution_info)
+
+    @commit
+    def transaction_delete_distribution(self, distribution_info:distribution_in):
+        return self.crud.transaction.delete_distribution(distribution_info)

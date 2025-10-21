@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 
 
 class distribution_in(BaseModel):
-    user_id: UUID = Field(alias='userId')
+    user_id: UUID | None = Field(default=None, alias='userId')
     transaction_id: UUID | None = Field(default=None, alias='transactionId')
     role: Literal['owner', 'participant'] = Field(default='participant')
     size: float | None = Field(default=None)
