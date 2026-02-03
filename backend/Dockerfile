@@ -33,9 +33,11 @@ RUN curl https://pyenv.run | bash && \
 ENV PATH="/root/.pyenv/shims:/root/.pyenv/bin:$PATH"
 
 # Устанавливаем Poetry (менеджер зависимостей)
-RUN curl -sSL https://install.python-poetry.org | python3 - && \
+COPY poetry-install-script.py /tmp/
+RUN python3 /tmp/poetry-install-script.py && \
     export PATH="/root/.local/bin:$PATH" && \
-	poetry config virtualenvs.create true
+	poetry config virtualenvs.create true && \
+	rm /tmp/poetry-install-script.py
 
 ENV PATH="/root/.local/bin:/root/.pyenv/shims:/root/.pyenv/bin:$PATH"
 
