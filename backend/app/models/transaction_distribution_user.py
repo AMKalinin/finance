@@ -19,6 +19,7 @@ class Transaction_distribution_user(Base):
     transaction_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('transaction.id'), primary_key=True)
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('user.id'), primary_key=True)
     distribution_user_role: Mapped[str] = mapped_column(ForeignKey('distribution_user_role.name'))
+    distribution_status: Mapped[str] = mapped_column(ForeignKey('distribution_status.name'))
     is_deleted: Mapped[bool] = mapped_column(default=False)
     size: Mapped[float] = mapped_column(nullable=True)
     #fraction: Mapped[bool] = mapped_column(default=False)

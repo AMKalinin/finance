@@ -24,9 +24,9 @@ class Transaction_status(Base):
 
 class Transaction(Base):
     id: Mapped[uuid.UUID] = mapped_column(types.Uuid, primary_key=True, default=uuid.uuid4)
-    FROM: Mapped[uuid.UUID] = mapped_column(ForeignKey("account.id"), nullable=True)
-    TO: Mapped[uuid.UUID] = mapped_column(ForeignKey("account.id"), nullable=True)
-    category: Mapped[int] = mapped_column(ForeignKey("category.id"), nullable=True) 
+    from_account_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("account.id"), nullable=True)
+    to_account_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("account.id"), nullable=True)
+    category: Mapped[uuid.UUID] = mapped_column(ForeignKey("category.id"), nullable=True) 
     type: Mapped[str] = mapped_column(ForeignKey("transaction_type.name"), nullable=False)
     debit_size: Mapped[float] = mapped_column()
     credit_size: Mapped[float] = mapped_column()
@@ -35,7 +35,7 @@ class Transaction(Base):
     description: Mapped[str] = mapped_column(Text)
     split_type: Mapped[str] = mapped_column(ForeignKey("split_type.name"), nullable=True)
     status: Mapped[str] = mapped_column(ForeignKey("transaction_status.name"), nullable=True) 
-    related_transactions: Mapped[uuid.UUID] = mapped_column(ForeignKey("transaction.id"), nullable=True)
+    #related_transactions: Mapped[uuid.UUID] = mapped_column(ForeignKey("transaction.id"), nullable=True)
 
     transaction_distribution_user = relationship("Transaction_distribution_user", back_populates="transactions")
     positions = relationship("Position", back_populates="transactions")

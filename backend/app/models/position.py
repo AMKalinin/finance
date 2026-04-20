@@ -12,7 +12,7 @@ class Position(Base):
     name: Mapped[str] = mapped_column(Text)
     transaction_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("transaction.id"), nullable=False)
     price: Mapped[float] = mapped_column()
-    quantity: Mapped[int] = mapped_column()
+    quantity: Mapped[float] = mapped_column()
 
     transactions = relationship('Transaction', back_populates='positions')
     position_shares = relationship('Position_user', back_populates='positions')
