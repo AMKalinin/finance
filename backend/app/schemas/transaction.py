@@ -18,6 +18,19 @@ class distribution_out(BaseModel):
     size: float
 
 
+class position_in(BaseModel):
+    name: str
+    transaction_id: UUID | None = Field(default=None, alias='transactionId')
+    price: float
+    quantity: float
+
+
+class position_out(BaseModel):
+    name: str
+    transaction_id: UUID = Field(alias='transactionId')
+    price: float
+    quantity: float
+
 
 class transaction_in(BaseModel):
     FROM: UUID | None = Field(default=None)
@@ -33,6 +46,7 @@ class transaction_in(BaseModel):
     status: Literal['pending', 'partially_paid', 'settled']
     related_transactions: UUID | None = Field(default=None, alias="relatedTransaction")
     distributions: list[distribution_in] | None = Field(default=None)
+    positions: list[position_in] | None = Field(default=None)
 
 
 class transaction_in_type(BaseModel): #TODO убрать
@@ -82,3 +96,4 @@ class transaction_out(BaseModel):
     status: Literal['pending', 'partially_paid', 'settled']
     related_transactions: UUID | None = Field(serialization_alias='relatedTransaction')
     transaction_distribution_user: list[distribution_out] = Field(min_length=1, serialization_alias='distributions')
+    positions: list[position_in] | None = Field()
