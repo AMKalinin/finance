@@ -12,16 +12,16 @@ class position_split_in(BaseModel):
 
 class position_in(BaseModel):
     name: str
-    transaction_id: UUID = Field(alias="transactionId")
+    transaction_id: UUID | None = Field(default=None, alias='transactionId')
     price: float
-    quantity: int = Field(default=1)
+    quantity: float
 
 
 class position_out(BaseModel):
-    id: UUID
+    id:UUID
     name: str
-    transaction_id: UUID = Field(serialization_alias="transactionId")
+    transaction_id: UUID = Field(serialization_alias='transactionId')
     price: float
-    quantity: int = Field(default=1)
+    quantity: float
 
 

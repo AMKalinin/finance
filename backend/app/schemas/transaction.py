@@ -3,6 +3,8 @@ from uuid import UUID
 from typing import Literal
 from pydantic import BaseModel, Field
 
+from .position import position_in, position_out
+
 
 class distribution_in(BaseModel):
     user_id: UUID | None = Field(default=None, alias='userId')
@@ -16,20 +18,6 @@ class distribution_out(BaseModel):
     transaction_id: UUID = Field(serialization_alias='transactionId')
     distribution_user_role: Literal['owner', 'participant'] = Field(serialization_alias='role')
     size: float
-
-
-class position_in(BaseModel):
-    name: str
-    transaction_id: UUID | None = Field(default=None, alias='transactionId')
-    price: float
-    quantity: float
-
-
-class position_out(BaseModel):
-    name: str
-    transaction_id: UUID = Field(serialization_alias='transactionId')
-    price: float
-    quantity: float
 
 
 class transaction_in(BaseModel):
