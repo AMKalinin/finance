@@ -53,11 +53,8 @@ class CRUD_transaction(CRUD_base):
                 transactionId=db_transaction.id,
                 role='owner',size=size
         )
-        print(db_transaction.id)
         db_objects.append(self.create_distribution(owner_distr_info))
-        print(db_transaction.id)
         for position in transaction_info.positions:
-            print(db_transaction.id)
             position.transaction_id = db_transaction.id
             db_objects.append(self.create_position(position))
 
@@ -77,7 +74,6 @@ class CRUD_transaction(CRUD_base):
         return db_distr
 
     def create_position(self, position:position_in, save_to_db:bool=False) -> Position:
-        print(position)
         db_position = Position(
                     name=position.name,
                     transaction_id=position.transaction_id,
