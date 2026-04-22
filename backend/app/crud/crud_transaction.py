@@ -53,11 +53,7 @@ class CRUD_transaction(CRUD_base):
                 transactionId=db_transaction.id,
                 role='owner',size=size
         )
-        db_objects.append(self.create_distribution(owner_distr_info))
-        for position in transaction_info.positions:
-            position.transaction_id = db_transaction.id
-            db_objects.append(self.create_position(position))
-
+        db_objects.append(self.create_distribution(owner_distr_info)) 
         self.db.bulk_save_objects(db_objects)
         return db_transaction
 
@@ -72,18 +68,7 @@ class CRUD_transaction(CRUD_base):
         if save_to_db:
             self.db.add(db_distr)
         return db_distr
-
-    def create_position(self, position:position_in, save_to_db:bool=False) -> Position:
-        db_position = Position(
-                    name=position.name,
-                    transaction_id=position.transaction_id,
-                    price=position.price,
-                    quantity=position.quantity
-                )
-        if save_to_db:
-            self.db.add(db_position)
-        return db_position
-
+ 
     def get_distribution(self, transaction_id:UUID) -> Transaction_distribution_user:
         res = [
             distr
@@ -91,28 +76,13 @@ class CRUD_transaction(CRUD_base):
             if  distr.transaction_id == transaction_id
         ]
         return res[0]
-
-    def get_positions(self, transaction_id:UUID) -> list[Position]:
-        res = [
-            position 
-            for position in self.user.transaction_distribution_user
-            if position.transaction_id == transaction_id
-        ]
-        return res
-
+ 
     def update_distribution(self, distribution_info:distribution_in) -> Transaction_distribution_user:
         db_distr = self.db.query(Transaction_distribution_user).get((distribution_info.user_id, distribution_info.transaction_id))
         if distribution_info.size:
             db_distr.size = distribution_info.size
         return db_distr
-
-    def update_position(self, id:UUID, position_info:position_in) -> Position:
-        db_position = self.db.query(Position).get(id)
-        db_position.price = position_info.price
-        db_position.quantity = position_info.quantity
-
-        return db_position 
-
+ 
     def delete_distribution(self, distribution_info:distribution_in) -> None:
         db_distr = self.db.query(Transaction_distribution_user).get((distribution_info.user_id, distribution_info.transaction_id))
         self.db.delete(db_distr)

@@ -231,6 +231,9 @@ class Fin_app:
                 transaction_info.distributions = []
         
         transaction = self.crud.transaction.create_transaction(transaction_info)
+        for position in transaction_info.positions:
+            position.transaction_id = transaction.id
+            self.crud.position.create_position(position)
         return transaction
 
     @commit
