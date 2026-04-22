@@ -1,5 +1,5 @@
-FROM ubuntu
-
+FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
 # Устанавливаем зависимости для Python и системы
 RUN apt-get update && apt-get install -y \
     wget \
@@ -21,15 +21,16 @@ RUN apt-get update && apt-get install -y \
     python3-openssl \
     && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем Python 3.11 через pyenv (чтобы получить точную версию)
+# Устанавливаем Python 3.12.3 через pyenv (чтобы получить точную версию)
+SHELL ["/bin/bash", "-c"]
 RUN curl https://pyenv.run | bash && \
     export PATH="$HOME/.pyenv/bin:$PATH" && \
     eval "$(pyenv init --path)" && \
     eval "$(pyenv virtualenv-init -)" && \
-    pyenv install 3.11.0 && \
-    pyenv global 3.11.0
+    pyenv install 3.12.3 && \
+    pyenv global 3.12.3
 
-# Добавляем Python 3.11 в PATH
+# Добавляем Python 3.12.3 в PATH
 ENV PATH="/root/.pyenv/shims:/root/.pyenv/bin:$PATH"
 
 # Устанавливаем Poetry (менеджер зависимостей)
