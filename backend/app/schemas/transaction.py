@@ -27,7 +27,7 @@ class position_in(BaseModel):
 
 class position_out(BaseModel):
     name: str
-    transaction_id: UUID = Field(alias='transactionId')
+    transaction_id: UUID = Field(serialization_alias='transactionId')
     price: float
     quantity: float
 
@@ -83,8 +83,8 @@ class transaction_in_delete(BaseModel):
 
 class transaction_out(BaseModel):
     id: UUID
-    FROM: UUID | None
-    TO: UUID | None
+    from_account_id: UUID | None
+    to_account_id: UUID | None
     category: UUID | None
     type: Literal['debit', 'adding', 'transfer'] | None
     debit_size: float | None = Field(serialization_alias='debitSize')
@@ -94,6 +94,7 @@ class transaction_out(BaseModel):
     description: str | None
     split_type: Literal['equal', 'percentage', 'amount', 'position'] | None = Field(serialization_alias='splitType')
     status: Literal['pending', 'partially_paid', 'settled']
-    related_transactions: UUID | None = Field(serialization_alias='relatedTransaction')
+    #related_transactions: UUID | None = Field(serialization_alias='relatedTransaction')
     transaction_distribution_user: list[distribution_out] = Field(min_length=1, serialization_alias='distributions')
-    positions: list[position_in] | None = Field()
+    positions: list[position_out]
+

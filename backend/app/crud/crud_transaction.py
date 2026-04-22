@@ -45,6 +45,7 @@ class CRUD_transaction(CRUD_base):
             if distribution.role == 'owner':
                 size = distribution.size
                 continue
+            distribution.transaction_id = db_transaction.id
             db_objects.append(self.create_distribution(distribution))
 
         owner_distr_info = distribution_in(
@@ -52,9 +53,12 @@ class CRUD_transaction(CRUD_base):
                 transactionId=db_transaction.id,
                 role='owner',size=size
         )
+        print(db_transaction.id)
         db_objects.append(self.create_distribution(owner_distr_info))
-       
+        print(db_transaction.id)
         for position in transaction_info.positions:
+            print(db_transaction.id)
+            position.transaction_id = db_transaction.id
             db_objects.append(self.create_position(position))
 
         self.db.bulk_save_objects(db_objects)
@@ -65,13 +69,15 @@ class CRUD_transaction(CRUD_base):
             user_id=distribution.user_id,
             transaction_id=distribution.transaction_id,
             distribution_user_role=distribution.role,
-            size=distribution.size
+            size=distribution.size,
+            distribution_status='settled'
         )
         if save_to_db:
             self.db.add(db_distr)
         return db_distr
 
     def create_position(self, position:position_in, save_to_db:bool=False) -> Position:
+        print(position)
         db_position = Position(
                     name=position.name,
                     transaction_id=position.transaction_id,

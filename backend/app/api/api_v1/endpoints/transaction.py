@@ -23,7 +23,9 @@ router = APIRouter()
 
 @router.get("/all", response_model=list[transaction_out])
 def get_all(fin_app: Fin_app = Depends(deps.get_fin_service)):
-    return fin_app.get_all_transaction()  # crud.transaction.get_all_transaction(db)
+    res = fin_app.get_all_transaction()
+    [print(position.transaction_id) for position in res[1].positions]
+    return res # crud.transaction.get_all_transaction(db)
 
 
 @router.get("/by_period", response_model=list[transaction_out])
