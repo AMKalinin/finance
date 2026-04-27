@@ -3,8 +3,6 @@ from uuid import UUID
 
 from app.crud.crud_base import CRUD_base
 from app.models.transaction import Transaction
-from app.models.transaction_distribution_user import Transaction_distribution_user 
-from app.models.position import Position
 
 # from app.models.type_transaction import Type_transaction  # noqa
 from app.schemas.transaction import (
