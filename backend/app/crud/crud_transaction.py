@@ -10,12 +10,8 @@ from app.models.position import Position
 from app.schemas.transaction import (
     transaction_in,
     transaction_in_date,
-    transaction_in_delete,
     transaction_in_description,
     transaction_in_size,
-    transaction_in_type,
-    distribution_in,
-    position_in
 )
 
 
@@ -37,56 +33,9 @@ class CRUD_transaction(CRUD_base):
         )  # type: ignore 
         self.db.add(db_transaction)
         self.db.flush()
-
-        db_objects = [db_transaction]
-
-        size = transaction_info.debit_size
-        for distribution in transaction_info.distributions:
-            if distribution.role == 'owner':
-                size = distribution.size
-                continue
-            distribution.transaction_id = db_transaction.id
-            db_objects.append(self.create_distribution(distribution))
-
-        owner_distr_info = distribution_in(
-                userId=self.user.id,
-                transactionId=db_transaction.id,
-                role='owner',size=size
-        )
-        db_objects.append(self.create_distribution(owner_distr_info)) 
-        self.db.bulk_save_objects(db_objects)
+ 
         return db_transaction
 
-    def create_distribution(self, distribution: distribution_in, save_to_db:bool=False) -> Transaction_distribution_user:
-        db_distr = Transaction_distribution_user(
-            user_id=distribution.user_id,
-            transaction_id=distribution.transaction_id,
-            distribution_user_role=distribution.role,
-            size=distribution.size,
-            distribution_status='settled'
-        )
-        if save_to_db:
-            self.db.add(db_distr)
-        return db_distr
- 
-    def get_distribution(self, transaction_id:UUID) -> Transaction_distribution_user:
-        res = [
-            distr
-            for distr in self.user.transaction_distribution_user
-            if  distr.transaction_id == transaction_id
-        ]
-        return res[0]
- 
-    def update_distribution(self, distribution_info:distribution_in) -> Transaction_distribution_user:
-        db_distr = self.db.query(Transaction_distribution_user).get((distribution_info.user_id, distribution_info.transaction_id))
-        if distribution_info.size:
-            db_distr.size = distribution_info.size
-        return db_distr
- 
-    def delete_distribution(self, distribution_info:distribution_in) -> None:
-        db_distr = self.db.query(Transaction_distribution_user).get((distribution_info.user_id, distribution_info.transaction_id))
-        self.db.delete(db_distr)
- 
     def get_by_id(self, id: UUID) -> Transaction:
         res = [
             distr.transactions 

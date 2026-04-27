@@ -231,6 +231,20 @@ class Fin_app:
                 transaction_info.distributions = []
         
         transaction = self.crud.transaction.create_transaction(transaction_info)
+        
+        for distribution in transaction_info.distributions:
+            if distribution.role == 'owner':
+                continue
+            distribution.transaction_id = transaction.id
+            self.crud.distribution.create_distribution(distribution)
+
+        owner_distr_info = distribution_in(
+                userId=self.crud.user.get_info().id,
+                transactionId=transaction.id,
+                role='owner',size=transaction_info.debit_size
+        )
+        self.crud.distribution.create_distribution(owner_distr_info)
+       
         for position in transaction_info.positions:
             position.transaction_id = transaction.id
             self.crud.position.create_position(position)
