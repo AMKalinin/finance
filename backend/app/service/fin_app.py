@@ -1,6 +1,7 @@
 
 from uuid import UUID
 from datetime import date
+from sqlalchemy import delete
 from sqlalchemy.orm import  Session
 
 from app.crud import Crud
@@ -20,6 +21,7 @@ from app.schemas.account import (
     account_in_interest_rate,
 )
 from app.schemas.category import category_in, category_in_name
+from app.schemas.position import position_in
 from app.schemas.transaction import (
     distribution_in,
     transaction_in,
@@ -299,12 +301,24 @@ class Fin_app:
 
     @commit
     def transaction_add_distribution(self, distribution_info:distribution_in):
-        return self.crud.transaction.create_distribution(distribution_info, save_to_db=True)
+        transaction = self.crud.transaction.get_by_id(distribution_info.transaction_id)
+        if transaction == None:
+            raise Exception('Not found transaction')
+        return self.crud.distribution.create_distribution(distribution_info)
 
     @commit
     def transaction_update_distribution(self, distribution_info:distribution_in):
-        return self.crud.transaction.update_distribution(distribution_info)
+        return self.crud.distribution.update_distribution(distribution_info)
 
     @commit
     def transaction_delete_distribution(self, distribution_info:distribution_in):
-        return self.crud.transaction.delete_distribution(distribution_info)
+        return self.crud.distribution.delete_distribution(distribution_info)
+
+    @commit
+    def transaction_add_position(self, position_info:position_in):
+        return self.crud.position.create_position(position_info)
+    
+    @commit
+    def transaction_update_position(self, position_info:position_in):
+        return self.crud.position.update_position(position_info)
+
