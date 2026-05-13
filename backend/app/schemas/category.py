@@ -1,5 +1,5 @@
 from uuid import UUID
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class category_in(BaseModel):
@@ -21,3 +21,4 @@ class category_out(BaseModel):
     type: str
     level:int
     children: list['category_out'] = Field(default=[], serialization_alias="subCategory")
+    model_config = ConfigDict(from_attributes=True)

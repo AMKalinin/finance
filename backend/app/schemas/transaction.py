@@ -1,7 +1,7 @@
 import datetime
 from uuid import UUID
 from typing import Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 from .position import position_in, position_out
 from .distribution import distribution_in, distribution_out
@@ -72,4 +72,5 @@ class transaction_out(BaseModel):
     #related_transactions: UUID | None = Field(serialization_alias='relatedTransaction')
     transaction_distribution_user: list[distribution_out] = Field(min_length=1, serialization_alias='distributions')
     positions: list[position_out]
+    model_config = ConfigDict(from_attributes=True)
 

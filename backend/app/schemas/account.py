@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from app.models.account import AccountType
 from app.schemas.transaction import transaction_in
@@ -68,3 +68,4 @@ class account_out(BaseAccountModel):
     is_archived: bool
     is_primary: bool
     account_type: AccountType
+    model_config = ConfigDict(from_attributes=True)

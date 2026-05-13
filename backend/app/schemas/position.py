@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 
@@ -23,5 +23,6 @@ class position_out(BaseModel):
     transaction_id: UUID = Field(serialization_alias='transactionId')
     price: float
     quantity: float
+    model_config = ConfigDict(from_attributes=True)
 
 

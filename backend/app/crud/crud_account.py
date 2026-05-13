@@ -16,8 +16,28 @@ from app.schemas.account import (
 
 
 class CRUD_account(CRUD_base):
-    def get_all(self) -> list[Account]:
-        return self.user.accounts.filter(Account.is_deleted == False).all()  # self.db.query(Account).all()
+    def get_all(self, skip: int = 0, limit: int = 100) -> list[Account]:
+        """
+        Получить все активные учетные записи с пагинацией.
+        
+        Args:
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+        
+        Returns:
+            Список учетных записей
+        """
+        return (
+            self.user.accounts
+            .filter(Account.is_deleted == False)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+    
+    def count_all(self) -> int:
+        """Получить общее количество активных учетных записей."""
+        return self.user.accounts.filter(Account.is_deleted == False).count()
 
     def create_account(self, account_info: account_in) -> Account:
         db_account = Account(
@@ -133,12 +153,62 @@ class CRUD_account(CRUD_base):
         db_account.is_primary = account_info.is_primary
         return db_account
 
+    def get_archived(self, skip: int = 0, limit: int = 100) -> list[Account]:
+        """
+        Получить архивированные учетные записи с пагинацией.
+        
+        Args:
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+        
+        Returns:
+            Список архивированных учетных записей
+        """
+        return (
+            self.user.accounts
+            .filter(Account.is_deleted == False, Account.is_archived == True)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+    
+    def count_archived(self) -> int:
+        """Получить общее количество архивированных счетов."""
+        return self.user.accounts.filter(
+            Account.is_deleted == False, Account.is_archived == True
+        ).count()
+    
+    def get_primary(self, skip: int = 0, limit: int = 100) -> list[Account]:
+        """
+        Получить основные учетные записи с пагинацией.
+        
+        Args:
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+        
+        Returns:
+            Список основных учетных записей
+        """
+        return (
+            self.user.accounts
+            .filter(Account.is_deleted == False, Account.is_primary == True)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+    
+    def count_primary(self) -> int:
+        """Получить общее количество основных счетов."""
+        return self.user.accounts.filter(
+            Account.is_deleted == False, Account.is_primary == True
+        ).count()
+    
     def delete(self, id: UUID) -> Account:
         db_account = self.user.accounts.filter(
             Account.id == id
         ).first()  # self.db.query(Account).get(account_info.id)
 
-        if db_account == None:
+        if db_account is None:
             return db_account
 
         db_account.is_deleted = True

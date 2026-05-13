@@ -1,7 +1,7 @@
 import datetime
 import uuid
 
-from sqlalchemy import ForeignKey, String, Text, types
+from sqlalchemy import ForeignKey, Index, String, Text, types
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base_class import Base
@@ -24,14 +24,14 @@ class Transaction_status(Base):
 
 class Transaction(Base):
     id: Mapped[uuid.UUID] = mapped_column(types.Uuid, primary_key=True, default=uuid.uuid4)
-    from_account_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("account.id"), nullable=True)
-    to_account_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("account.id"), nullable=True)
-    category: Mapped[uuid.UUID] = mapped_column(ForeignKey("category.id"), nullable=True) 
-    type: Mapped[str] = mapped_column(ForeignKey("transaction_type.name"), nullable=False)
+    from_account_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("account.id"), nullable=True, index=True)
+    to_account_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("account.id"), nullable=True, index=True)
+    category: Mapped[uuid.UUID] = mapped_column(ForeignKey("category.id"), nullable=True, index=True) 
+    type: Mapped[str] = mapped_column(ForeignKey("transaction_type.name"), nullable=False, index=True)
     debit_size: Mapped[float] = mapped_column()
     credit_size: Mapped[float] = mapped_column()
     exchange_rate: Mapped[float] = mapped_column()
-    date: Mapped[datetime.date] = mapped_column(default=datetime.date.today, nullable=False)
+    date: Mapped[datetime.date] = mapped_column(default=datetime.date.today, nullable=False, index=True)
     description: Mapped[str] = mapped_column(Text)
     split_type: Mapped[str] = mapped_column(ForeignKey("split_type.name"), nullable=True)
     status: Mapped[str] = mapped_column(ForeignKey("transaction_status.name"), nullable=True) 
@@ -41,3 +41,9 @@ class Transaction(Base):
     positions = relationship("Position", back_populates="transactions")
     # user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("user.id"), nullable=False)
     # user = relationship("User", back_populates="transactions")
+
+    __table_args__ = (
+        Index('ix_transaction_user_date', 'date'),  # Комбинированный индекс для запросов по дате
+        Index('ix_transaction_account_type', 'from_account_id', 'to_account_id', 'type'),
+        Index('ix_transaction_category_status', 'category', 'status'),
+    )

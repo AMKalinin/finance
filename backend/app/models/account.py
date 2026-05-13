@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import ForeignKey, String, Text, types, Enum
+from sqlalchemy import ForeignKey, Index, String, Text, types, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base_class import Base
@@ -31,5 +31,12 @@ class Account(Base):
 
     account_type: Mapped[AccountType] = mapped_column(Enum(AccountType), nullable=False)
 
-    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("user.id"), nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("user.id"), nullable=False, index=True)
     user = relationship("User", back_populates="accounts")
+
+    __table_args__ = (
+        Index('ix_account_user_is_deleted', 'user_id', 'is_deleted'),
+        Index('ix_account_user_archived', 'user_id', 'is_archived'),
+        Index('ix_account_user_primary', 'user_id', 'is_primary'),
+        Index('ix_account_type', 'account_type'),
+    )

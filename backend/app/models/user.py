@@ -2,7 +2,7 @@ import uuid
 import json 
 from datetime import date
 
-from sqlalchemy import ForeignKey, Text, types
+from sqlalchemy import ForeignKey, Index, Text, types
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base_class import Base
@@ -16,8 +16,8 @@ class Subscription_type(Base):
 class User(Base):
     id: Mapped[uuid.UUID] = mapped_column(types.Uuid, primary_key=True, default=uuid.uuid4)
     description: Mapped[str] = mapped_column(Text)
-    subscription_type: Mapped[str] = mapped_column(ForeignKey('subscription_type.name'), default='free')
-    subscription_expiry: Mapped[date] = mapped_column(nullable=True)
+    subscription_type: Mapped[str] = mapped_column(ForeignKey('subscription_type.name'), default='free', index=True)
+    subscription_expiry: Mapped[date] = mapped_column(nullable=True, index=True)
     accounts = relationship("Account", back_populates="user", lazy="dynamic")
     categories = relationship("Category", back_populates="user", lazy="dynamic")
     position_shares = relationship("Position_user", back_populates="user", lazy="dynamic")
@@ -29,3 +29,7 @@ class User(Base):
 
     #transactions = relationship("Transaction", back_populates="user", lazy="dynamic")
     friends = relationship("Friends",foreign_keys='Friends.user2_id', back_populates="user2")
+
+    __table_args__ = (
+        Index('ix_user_subscription_type', 'subscription_type'),
+    )

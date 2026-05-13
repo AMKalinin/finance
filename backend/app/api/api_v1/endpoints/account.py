@@ -1,6 +1,7 @@
 from uuid import UUID
-
-from fastapi import APIRouter, Depends
+from typing import List, Optional
+from fastapi import APIRouter, Depends, Query
+from pydantic import BaseModel, Field
 
 from app.api import deps
 from app.schemas.account import (
@@ -16,13 +17,54 @@ from app.schemas.account import (
     account_out,
 )
 from app.service.fin_app import Fin_app
+from app.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 router = APIRouter()
 
 
-@router.get("/", response_model=list[account_out])
-def get_all_account(fin_app: Fin_app = Depends(deps.get_fin_service)):
-    return fin_app.get_all_account()
+class PaginationParams(BaseModel):
+    """Параметры пагинации."""
+    skip: int = Field(default=0, ge=0, description="Количество записей для пропуска")
+    limit: int = Field(default=100, le=1000, description="Максимальное количество записей (макс. 1000)")
+
+
+class PaginatedResponse(BaseModel):
+    """Общий ответ с пагинацией."""
+    items: List[account_out]
+    total: int
+    skip: int
+    limit: int
+    has_more: bool = Field(default=False, description="Есть ли еще записи")
+
+
+@router.get("/", response_model=PaginatedResponse)
+def get_all_account(
+    fin_app: Fin_app = Depends(deps.get_fin_service),
+    skip: int = Query(0, ge=0, alias="skip", description="Пропустить N записей"),
+    limit: int = Query(100, ge=1, le=1000, alias="limit", description="Максимум N записей")
+):
+    """
+    Получить все учетные записи с пагинацией.
+    
+    Параметры:
+        skip: Количество записей для пропуска (по умолчанию 0)
+        limit: Максимальное количество записей (макс. 1000, по умолчанию 100)
+    """
+    logger.info(f"Получение списка счетов с пагинацией", extra={"skip": skip, "limit": limit})
+    
+    accounts = fin_app.get_all_account(skip=skip, limit=limit)
+    total_count = fin_app.get_total_accounts()
+    has_more = (skip + limit) < total_count
+    
+    return PaginatedResponse(
+        items=accounts,
+        total=total_count,
+        skip=skip,
+        limit=limit,
+        has_more=has_more
+    )
 
 
 @router.post("/create", response_model=account_out)
@@ -106,10 +148,66 @@ def update_primary(
     return fin_app.update_account_primary(account_info)
 
 
+@router.get("/archived", response_model=PaginatedResponse)
+def get_archived_accounts(
+    fin_app: Fin_app = Depends(deps.get_fin_service),
+    skip: int = Query(0, ge=0, alias="skip"),
+    limit: int = Query(100, ge=1, le=1000, alias="limit")
+):
+    """
+    Получить архивированные счета с пагинацией.
+    
+    Параметры:
+        skip: Количество записей для пропуска
+        limit: Максимальное количество записей
+    """
+    accounts = fin_app.get_archived_accounts(skip=skip, limit=limit)
+    total_count = fin_app.get_total_archived_accounts()
+    has_more = (skip + limit) < total_count
+    
+    return PaginatedResponse(
+        items=accounts,
+        total=total_count,
+        skip=skip,
+        limit=limit,
+        has_more=has_more
+    )
+
+@router.get("/primary", response_model=PaginatedResponse)
+def get_primary_accounts(
+    fin_app: Fin_app = Depends(deps.get_fin_service),
+    skip: int = Query(0, ge=0, alias="skip"),
+    limit: int = Query(100, ge=1, le=1000, alias="limit")
+):
+    """
+    Получить основные счета с пагинацией.
+    
+    Параметры:
+        skip: Количество записей для пропуска
+        limit: Максимальное количество записей
+    """
+    accounts = fin_app.get_primary_accounts(skip=skip, limit=limit)
+    total_count = fin_app.get_total_primary_accounts()
+    has_more = (skip + limit) < total_count
+    
+    return PaginatedResponse(
+        items=accounts,
+        total=total_count,
+        skip=skip,
+        limit=limit,
+        has_more=has_more
+    )
+
 @router.delete("/{id}", response_model=account_out)
 def delete_account(
     *,
     fin_app: Fin_app = Depends(deps.get_fin_service),
     id:UUID,
 ):
+    """
+    Удалить учетную запись.
+    
+    Параметры:
+        id: UUID учетной записи
+    """
     return fin_app.delete_account(id)

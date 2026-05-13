@@ -1,0 +1,961 @@
+{
+  "info": {
+    "_postman_id": "finance-api-collection",
+    "name": "Finance API Collection",
+    "description": "API тесты для Finance Backend (FastAPI)\n\nБазовый URL: http://localhost:8000/api/v1\n\nПеременные:\n- baseUrl: http://localhost:8000/api/v1\n- userId: ID текущего пользователя\n- accountId: ID учетной записи\n- categoryId: ID категории\n- transactionId: ID транзакции",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "User & Friends",
+      "item": [
+        {
+          "name": "Get User Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/info",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "info"]
+            },
+            "description": "Получить информацию о текущем пользователе"
+          }
+        },
+        {
+          "name": "Get Friends List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/friends",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "friends"]
+            },
+            "description": "Получить список друзей текущего пользователя"
+          }
+        },
+        {
+          "name": "Add Friend",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"friend_id\": \"UUID-VALUE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/friend",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "friend"]
+            },
+            "description": "Добавить друга по UUID\n\nТело запроса:\n- friend_id: UUID друга (например, \"550e8400-e29b-41d4-a716-446655440000\")"
+          }
+        },
+        {
+          "name": "Accept Friend Request",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"friend_id\": \"UUID-VALUE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/friend/accept",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "friend", "accept"]
+            },
+            "description": "Принять запрос в друзья"
+          }
+        },
+        {
+          "name": "Reject Friend Request",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"friend_id\": \"UUID-VALUE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/friend/reject",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "friend", "reject"]
+            },
+            "description": "Отклонить запрос в друзья"
+          }
+        },
+        {
+          "name": "Delete Friend",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"friend_id\": \"UUID-VALUE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/friend",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "friend"]
+            },
+            "description": "Удалить друга из списка"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Account Management",
+      "item": [
+        {
+          "name": "Get All Accounts (Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/account/?skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", ""],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0",
+                  "description": "Количество записей для пропуска"
+                },
+                {
+                  "key": "limit",
+                  "value": "100",
+                  "description": "Максимум 1000 записей"
+                }
+              ]
+            },
+            "description": "Получить список всех учетных записей с пагинацией\n\nПараметры:\n- skip: Количество записей для пропуска (по умолчанию 0)\n- limit: Максимум 1000 записей (по умолчанию 100)"
+          }
+        },
+        {
+          "name": "Get Archived Accounts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/account/archived?skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "archived"],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Получить архивированные учетные записи с пагинацией"
+          }
+        },
+        {
+          "name": "Get Primary Accounts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/account/primary?skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "primary"]
+            },
+            "description": "Получить основные учетные записи"
+          }
+        },
+        {
+          "name": "Create Account - Basic",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Счет в рублях\",\n  \"currency\": \"RUB\",\n  \"balance\": 50000,\n  \"description\": \"Основной банковский счет\",\n  \"interest_rate\": null,\n  \"is_emergency_fund\": false,\n  \"decimal_places\": 2,\n  \"is_archived\": false,\n  \"is_primary\": true,\n  \"account_type\": \"bank\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/account/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "create"]
+            },
+            "description": "Создать новую учетную запись\n\nПоля:\n- name: Название счета (обязательно)\n- currency: Валюта (RUB, USD, EUR) (обязательно)\n- balance: Начальный баланс (по умолчанию 0)\n- description: Описание (опционально)\n- interest_rate: Процентная ставка (опционально)\n- is_emergency_fund: Является ли фондом на случай чрезвычайных ситуаций\n- decimal_places: Количество знаков после запятой (по умолчанию 2)\n- is_archived: Архивирован ли счет\n- is_primary: Является ли основной учетной записью\n- account_type: Тип счета (bank, cash, card, crypto, investment)"
+          }
+        },
+        {
+          "name": "Get Account by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/account/{{accountId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "{{accountId}}"]
+            },
+            "description": "Получить учетную запись по UUID"
+          }
+        },
+        {
+          "name": "Update Account Balance",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{accountId}}\",\n  \"operation\": \"add\", \n  \"balance\": 1000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/account/{{accountId}}/balance",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "{{accountId}}", "balance"]
+            },
+            "description": "Обновить баланс учетной записи\n\noperation: \"add\" (добавить) или \"set\" (установить)"
+          }
+        },
+        {
+          "name": "Update Account Name",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{accountId}}\",\n  \"name\": \"Новое название счета\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/account/{{accountId}}/name",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "{{accountId}}", "name"]
+            },
+            "description": "Обновить название учетной записи"
+          }
+        },
+        {
+          "name": "Update Account Description",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{accountId}}\",\n  \"description\": \"Новое описание\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/account/{{accountId}}/description",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "{{accountId}}", "description"]
+            },
+            "description": "Обновить описание учетной записи"
+          }
+        },
+        {
+          "name": "Update Interest Rate",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{accountId}}\",\n  \"interest_rate\": 5.5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/account/{{accountId}}/interest_rate",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "{{accountId}}", "interest_rate"]
+            },
+            "description": "Обновить процентную ставку"
+          }
+        },
+        {
+          "name": "Update Emergency Fund Flag",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{accountId}}\",\n  \"is_emergency_fund\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/account/{{accountId}}/emergency_fund",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "{{accountId}}", "emergency_fund"]
+            },
+            "description": "Установить флаг фонда на случай чрезвычайных ситуаций"
+          }
+        },
+        {
+          "name": "Update Decimal Places",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{accountId}}\",\n  \"decimal_places\": 4\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/account/{{accountId}}/decimal_places",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "{{accountId}}", "decimal_places"]
+            },
+            "description": "Обновить количество знаков после запятой"
+          }
+        },
+        {
+          "name": "Update Archived Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{accountId}}\",\n  \"is_archived\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/account/{{accountId}}/archived",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "{{accountId}}", "archived"]
+            },
+            "description": "Архивировать или разархивировать учетную запись"
+          }
+        },
+        {
+          "name": "Update Primary Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{accountId}}\",\n  \"is_primary\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/account/{{accountId}}/primary",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "{{accountId}}", "primary"]
+            },
+            "description": "Установить учетную запись как основную"
+          }
+        },
+        {
+          "name": "Delete Account",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/account/{{accountId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "{{accountId}}"]
+            },
+            "description": "Удалить учетную запись"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Category Management",
+      "item": [
+        {
+          "name": "Get All Categories (Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/category/?skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["category", ""],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Получить все категории со структурой вложенности с пагинацией"
+          }
+        },
+        {
+          "name": "Get Expense Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/category/type/expenses?skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["category", "type", "expenses"]
+            },
+            "description": "Получить категории расходов с пагинацией"
+          }
+        },
+        {
+          "name": "Get Income Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/category/type/income?skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["category", "type", "income"]
+            },
+            "description": "Получить категории доходов с пагинацией"
+          }
+        },
+        {
+          "name": "Create Category - Root Level",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Еда и напитки\",\n  \"type\": \"expense\",\n  \"level\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/category/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["category", "create"]
+            },
+            "description": "Создать категорию верхнего уровня\n\nПоля:\n- name: Название категории (обязательно)\n- type: Тип (expense, income, transfer) (опционально)\n- level: Уровень вложенности (по умолчанию 1)\n- parentCategory: UUID родительской категории (для подкатегорий)"
+          }
+        },
+        {
+          "name": "Create Category - Subcategory",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Рестораны\",\n  \"type\": \"expense\",\n  \"parentCategory\": \"UUID-RODITELSKOY-KATEGORII\",\n  \"level\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/category/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["category", "create"]
+            },
+            "description": "Создать подкатегорию"
+          }
+        },
+        {
+          "name": "Update Category Name",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{categoryId}}\",\n  \"name\": \"Новое название категории\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/category/{{categoryId}}/name",
+              "host": ["{{baseUrl}}"],
+              "path": ["category", "{{categoryId}}", "name"]
+            },
+            "description": "Обновить название категории"
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/category/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["category", "{{categoryId}}"]
+            },
+            "description": "Удалить категорию"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transaction Management - Basic",
+      "item": [
+        {
+          "name": "Get All Transactions (Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/transaction/all?skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "all"],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0",
+                  "description": "Пропустить N записей"
+                },
+                {
+                  "key": "limit",
+                  "value": "100",
+                  "description": "Максимум 1000 записей"
+                }
+              ]
+            },
+            "description": "Получить все транзакции с пагинацией\n\nПараметры:\n- skip: Количество записей для пропуска (по умолчанию 0)\n- limit: Максимум 1000 записей (по умолчанию 100)"
+          }
+        },
+        {
+          "name": "Get Transactions by Period (Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/transaction/by_period?from_date=2025-01-01&to_date=2025-12-31&skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "by_period"],
+              "query": [
+                {
+                  "key": "from_date",
+                  "value": "2025-01-01"
+                },
+                {
+                  "key": "to_date",
+                  "value": "2025-12-31"
+                },
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Получить транзакции за период с пагинацией\n\nfrom_date: Дата начала в формате YYYY-MM-DD (обязательно)\nto_date: Дата окончания в формате YYYY-MM-DD (обязательно)\nskip: Количество записей для пропуска (по умолчанию 0)\nlimit: Максимум 1000 записей (по умолчанию 100)"
+          }
+        },
+        {
+          "name": "Get Transactions by Period and Type (Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/transaction/by_period_type?from_date=2025-01-01&to_date=2025-12-31&operation_type=debit&skip=0&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "by_period_type"],
+              "query": [
+                {
+                  "key": "from_date",
+                  "value": "2025-01-01"
+                },
+                {
+                  "key": "to_date",
+                  "value": "2025-12-31"
+                },
+                {
+                  "key": "operation_type",
+                  "value": "debit"
+                },
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Получить транзакции за период с фильтрацией по типу и пагинацией\n\noperation_type: debit, adding, transfer (обязательно)\nskip: Количество записей для пропуска (по умолчанию 0)\nlimit: Максимум 1000 записей (по умолчанию 100)"
+          }
+        },
+        {
+          "name": "Create Transaction - Debit",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"FROM\": null,\n  \"TO\": \"{{accountId}}\",\n  \"category\": null,\n  \"type\": \"debit\",\n  \"debitSize\": 5000,\n  \"creditSize\": null,\n  \"exchangeRate\": null,\n  \"date\": \"2025-01-15\",\n  \"description\": \"Покупка продуктов\",\n  \"splitType\": null,\n  \"status\": \"settled\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transaction/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "create"]
+            },
+            "description": "Создать транзакцию типа debit (расход)\n\nПоля:\n- FROM: UUID источника средств (опционально для debit)\n- TO: UUID получателя/счета (обязательно для debit)\n- category: UUID категории (опционально)\n- type: 'debit', 'adding', 'transfer' (обязательно)\n- debitSize: Сумма дебета (обязательно)\n- creditSize: Сумма кредита (для transfer)\n- exchangeRate: Курс валюты\n- date: Дата транзакции YYYY-MM-DD (обязательно)\n- description: Описание (опционально)\n- splitType: 'equal', 'percentage', 'amount', 'position'\n- status: 'pending', 'partially_paid', 'settled' (обязательно)"
+          }
+        },
+        {
+          "name": "Create Transaction - Adding",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"FROM\": null,\n  \"TO\": \"{{accountId}}\",\n  \"type\": \"adding\",\n  \"debitSize\": null,\n  \"creditSize\": 10000,\n  \"date\": \"2025-01-15\",\n  \"description\": \"Пополнение счета\",\n  \"status\": \"settled\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transaction/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "create"]
+            },
+            "description": "Создать транзакцию типа adding (дополнение)"
+          }
+        },
+        {
+          "name": "Create Transaction - Transfer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"FROM\": \"{{accountIdFrom}}\",\n  \"TO\": \"{{accountIdTo}}\",\n  \"type\": \"transfer\",\n  \"debitSize\": null,\n  \"creditSize\": 5000,\n  \"date\": \"2025-01-15\",\n  \"description\": \"Перевод между счетами\",\n  \"status\": \"settled\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transaction/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "create"]
+            },
+            "description": "Создать транзакцию типа transfer (перевод)"
+          }
+        },
+        {
+          "name": "Update Transaction Date",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{transactionId}}\",\n  \"date\": \"2025-01-20\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transaction/{{transactionId}}/date",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "{{transactionId}}", "date"]
+            },
+            "description": "Обновить дату транзакции"
+          }
+        },
+        {
+          "name": "Update Transaction Size",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{transactionId}}\",\n  \"size\": 7500\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transaction/{{transactionId}}/size",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "{{transactionId}}", "size"]
+            },
+            "description": "Обновить размер транзакции"
+          }
+        },
+        {
+          "name": "Update Transaction Description",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{transactionId}}\",\n  \"description\": \"Новое описание транзакции\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transaction/{{transactionId}}/description",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "{{transactionId}}", "description"]
+            },
+            "description": "Обновить описание транзакции"
+          }
+        },
+        {
+          "name": "Delete Transaction",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/transaction/{{transactionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "{{transactionId}}"]
+            },
+            "description": "Удалить транзакцию"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transaction Distribution Management",
+      "item": [
+        {
+          "name": "Add Distribution to Transaction",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": null,\n  \"transactionId\": \"{{transactionId}}\",\n  \"role\": \"participant\",\n  \"size\": 2500,\n  \"percentage\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transaction/distribution",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "distribution"]
+            },
+            "description": "Добавить распределение к транзакции\n\nПоля:\n- userId: UUID пользователя (для совместных расходов)\n- transactionId: UUID транзакции (обязательно)\n- role: 'owner' или 'participant'\n- size: Фиксированная сумма для распределения\n- percentage: Процент от суммы транзакции"
+          }
+        },
+        {
+          "name": "Update Distribution",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": null,\n  \"transactionId\": \"{{transactionId}}\",\n  \"role\": \"participant\",\n  \"size\": 3000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transaction/distribution",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "distribution"]
+            },
+            "description": "Обновить распределение"
+          }
+        },
+        {
+          "name": "Delete Distribution",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": null,\n  \"transactionId\": \"{{transactionId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transaction/distribution",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "distribution"]
+            },
+            "description": "Удалить распределение из транзакции"
+          }
+        },
+        {
+          "name": "Settle Distribution",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"transactionId\": \"{{transactionId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transaction/distribution/settle",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "distribution", "settle"]
+            },
+            "description": "Пометить распределение как оплаченное"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transaction Position Management",
+      "item": [
+        {
+          "name": "Add Position to Transaction",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"AAPL\",\n  \"transactionId\": \"{{transactionId}}\",\n  \"price\": 150.25,\n  \"quantity\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transaction/position",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "position"]
+            },
+            "description": "Добавить позицию (актив) к транзакции\n\nПоля:\n- name: Название актива (например, 'AAPL', 'Bitcoin')\n- transactionId: UUID транзакции\n- price: Цена за единицу\n- quantity: Количество"
+          }
+        },
+        {
+          "name": "Update Position",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"AAPL\",\n  \"transactionId\": \"{{transactionId}}\",\n  \"price\": 155.75,\n  \"quantity\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transaction/position",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "position"]
+            },
+            "description": "Обновить позицию в транзакции"
+          }
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "noauth"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": []
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": []
+      }
+    }
+  ]
+}

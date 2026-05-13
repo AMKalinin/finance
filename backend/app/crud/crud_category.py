@@ -6,14 +6,79 @@ from app.schemas.category import category_in, category_in_name
 
 
 class CRUD_category(CRUD_base):
-    def get_all(self) -> list[Category]: 
-        return self.user.categories.filter(
-                Category.is_deleted == False).all() 
+    def get_all(self, skip: int = 0, limit: int = 100) -> list[Category]: 
+        """
+        Получить все категории с пагинацией.
+        
+        Args:
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+        
+        Returns:
+            Список категорий
+        """
+        return (
+            self.user.categories
+            .filter(Category.is_deleted == False)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
     
-    def get_all_structured_list(self) -> list[Category]:
+    def count_all(self) -> int:
+        """Получить общее количество активных категорий."""
         return self.user.categories.filter(
-                Category.level == 1).filter(
-                Category.is_deleted == False).all()
+            Category.is_deleted == False
+        ).count()
+    
+    def get_all_structured_list(self, skip: int = 0, limit: int = 100) -> list[Category]:
+        """
+        Получить корневые категории (уровень 1) с пагинацией.
+        
+        Args:
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+        
+        Returns:
+            Список корневых категорий со вложенными подкатегориями
+        """
+        return (
+            self.user.categories
+            .filter(Category.level == 1, Category.is_deleted == False)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+    
+    def get_by_type(self, category_type: str, skip: int = 0, limit: int = 100) -> list[Category]:
+        """
+        Получить категории по типу с пагинацией.
+        
+        Args:
+            category_type: Тип категории (expense, income)
+            skip: Количество записей для пропуска
+            limit: Максимальное количество записей
+        
+        Returns:
+            Список категорий указанного типа
+        """
+        return (
+            self.user.categories
+            .filter(
+                Category.is_deleted == False,
+                Category.type == category_type
+            )
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+    
+    def count_by_type(self, category_type: str) -> int:
+        """Получить общее количество категорий указанного типа."""
+        return self.user.categories.filter(
+            Category.is_deleted == False,
+            Category.type == category_type
+        ).count()
 
     #def get_all_flat_list(self)-> list[Category]:
     #    return self.user.categories.filter
