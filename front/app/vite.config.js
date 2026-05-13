@@ -26,5 +26,8 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     allowedHosts: ['myfinsi.ru'],
-  }
+  },
+  define: {},
+  // Экспортируем переменные окружения VITE_* в приложение
+  envPrefix: 'VITE_'
 })

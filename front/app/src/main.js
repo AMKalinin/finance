@@ -5,10 +5,11 @@ import './style.css'
 import App from './App.vue'
 import router from './router/router'
 import { initKeycloak, getToken } from './keycloak/keycloak.js'
+import { settings } from './config/settings.js'
 import axios from 'axios'
 
 
-axios.defaults.baseURL = 'https://myfinsi.ru/api/v1'
+axios.defaults.baseURL = settings.backend.baseUrl
 axios.interceptors.request.use(
   (config) => {
     const token = getToken()

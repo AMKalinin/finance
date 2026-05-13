@@ -16,7 +16,7 @@
     { name: 'Categories', icon: ChartPieIcon, id: 'categories' },
     { name: 'Transactions', icon: ArrowsRightLeftIcon, id: 'transactions' },
     { name: 'Profile', icon: UserIcon, id: 'profile' },
-    { name: 'Settings', icon: Cog6ToothIcon, id: 'settings' },
+    // { name: 'Settings', icon: Cog6ToothIcon, id: 'settings' },
   ]
 
   const activeTab = ref('overview')
@@ -29,42 +29,82 @@
 
 
 <template>
-  <div class="bg-sidebar w-20 h-screen flex flex-col items-center py-8 gap-8 fixed">
-    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
-      <span class="text-black text-2xl font-bold">$</span>
+  <div class="bg-sidebar dark:bg-gray-900 w-20 lg:w-64 h-screen flex flex-col items-center lg:items-stretch py-8 gap-8 fixed transition-all duration-300">
+    <!-- Logo -->
+    <div class="w-12 lg:w-full lg:h-auto bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center lg:p-4 shadow-md hover:shadow-lg transition-shadow">
+      <span class="text-black dark:text-purple-400 text-2xl font-bold">$</span>
     </div>
-    <div class="flex flex-col gap-4">
+
+    <!-- Navigation -->
+    <nav class="flex-1 w-full px-3 space-y-2">
       <button
         v-for="item in menuItems"
         :key="item.id"
-        :class="[
-          'w-12 h-12 rounded-xl flex flex-col items-center justify-center transition-colors group',
-          activeTab === item.id ? 'bg-white' : 'hover:bg-gray-800'
-        ]"
         @click="handleTabClick(item.id)"
+        :class="[
+          'w-full rounded-xl flex items-center gap-4 transition-all duration-200',
+          activeTab === item.id 
+            ? 'bg-white dark:bg-gray-800 shadow-md' 
+            : 'hover:bg-black/10 dark:hover:bg-white/5'
+        ]"
       >
-        <component
-          :is="item.icon"
-          :class="[
-            'w-6 h-6 mb-1',
-            activeTab === item.id ? 'text-black' : 'text-gray-400 group-hover:text-gray-300'
-          ]"
-        />
+        <div 
+          class="flex flex-col items-center justify-center p-3 lg:p-2 rounded-lg transition-colors min-w-[64px] lg:min-w-0"
+        >
+          <component
+            :is="item.icon"
+            :class="[
+              'w-6 h-6',
+              activeTab === item.id 
+                ? 'text-black dark:text-purple-400' 
+                : 'text-gray-400 dark:text-gray-500'
+            ]"
+          />
+          <span
+            v-if="false" 
+            :class="[
+              'text-[10px] lg:hidden',
+              activeTab === item.id ? 'text-black dark:text-purple-400' : 'text-gray-400 dark:text-gray-500'
+            ]"
+          >
+            {{ item.name }}
+          </span>
+        </div>
+
+        <!-- Desktop label -->
         <span
+          v-if="true"
           :class="[
-            'text-[10px]',
-            activeTab === item.id ? 'text-black' : 'text-gray-400 group-hover:text-gray-300'
+            'hidden lg:block text-sm font-medium whitespace-nowrap',
+            activeTab === item.id 
+              ? 'text-black dark:text-purple-400' 
+              : 'text-gray-600 dark:text-gray-400'
           ]"
         >
           {{ item.name }}
         </span>
       </button>
+    </nav>
+
+    <!-- Footer (optional) -->
+    <div class="w-full px-3">
+      <div class="text-xs text-center lg:text-left text-gray-500 dark:text-gray-600 px-4 py-2">
+        v1.0.0
+      </div>
     </div>
   </div>
 </template>
 
-<style>
-  .bg-sidebar{
-    background-color: #1A1D1F !important;
+<style scoped>
+  /* Custom scrollbar for sidebar */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
   }
 </style>

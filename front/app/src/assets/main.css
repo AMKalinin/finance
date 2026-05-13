@@ -1,5 +1,6 @@
 @import './base.css';
 
+/* App container styles */
 #app {
   max-width: 1280px;
   margin: 0 auto;
@@ -7,20 +8,33 @@
   font-weight: normal;
 }
 
+/* Link styles with dark mode support */
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
+  color: #3b82f6; /* Blue instead of green for better contrast */
+  transition: color 0.4s ease;
   padding: 3px;
+}
+
+.dark a,
+.dark .green {
+  color: #93c5fd; /* Light blue for dark mode */
 }
 
 @media (hover: hover) {
   a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+  }
+  
+  .dark a:hover {
+    background-color: rgba(147, 197, 253, 0.2);
+    color: #60a5fa;
   }
 }
 
+/* Desktop layout */
 @media (min-width: 1024px) {
   body {
     display: flex;
@@ -29,7 +43,29 @@ a,
 
   #app {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
     padding: 0 2rem;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  #app {
+    padding: 1rem;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  h2 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 768px) and (max-width: 1023px) {
+  #app {
+    padding: 1.5rem;
   }
 }

@@ -1,9 +1,10 @@
 import Keycloak from 'keycloak-js'
+import { settings } from '../config/settings.js'
 
 const keycloakConfig = {
-  url: 'https://myfinsi.ru',
-  realm: 'alkal_realm',
-  clientId: 'public-client'
+  url: settings.keycloak.url,
+  realm: settings.keycloak.realm,
+  clientId: settings.keycloak.clientId
 }
 
 const keycloak = new Keycloak(keycloakConfig)
@@ -13,7 +14,7 @@ export const initKeycloak = () => {
     onLoad: 'login-required', // автоматически перенаправляет на страницу входа
     checkLoginIframe: false,
     pkceMethod: 'S256',
-    redirectUri: 'https://myfinsi.ru'
+    redirectUri: settings.keycloak.redirectUri
   })
 }
 
