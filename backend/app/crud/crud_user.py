@@ -13,11 +13,11 @@ class CRUD_user(CRUD_base):
         self.user.subscription_expiry = user_in_subscription.date
         return self.user
 
-    def get_friedns(self):
+    def get_friends(self):
         friends = self.user.friends
         return friends
 
-    def add_friend(self, user_id:UUID):
+    def add_friend(self, user_id: UUID):
         friend_1 = Friends(
                 user1_id = self.user.id,
                 user2_id = user_id,
@@ -32,27 +32,26 @@ class CRUD_user(CRUD_base):
         self.db.add(friend_2)
         return friend_1, friend_2
 
-    def accept_friend(self, friend_id:UUID):
+    def accept_friend(self, friend_id: UUID):
         friend_1 = self.db.query(Friends).get((self.user.id, friend_id))
         if friend_1.status != 'pending_received':
-            raise AcceptFriendError('Вы не можете подтвердить дружбу') 
+            raise AcceptFriendError('Вы не можете подтвердить дружбу')
         friend_2 = self.db.query(Friends).get((friend_id, self.user.id ))
-        
+
         friend_1.status = 'accept'
         friend_2.status = 'accept'
         return friend_1, friend_2
-    
-    def reject_friend(self, friend_id:UUID):
+
+    def reject_friend(self, friend_id: UUID):
         friend_1 = self.db.query(Friends).get((self.user.id, friend_id))
         if friend_1.status != 'pending_received':
             raise AcceptFriendError('Вы не можете отклонить дружбу')
         friend_2 = self.db.query(Friends).get((friend_id, self.user.id ))
         self.db.delete(friend_1)
-        self.db.delete(friend_2) 
+        self.db.delete(friend_2)
 
-    def delete_friend(self, friend_id:UUID):
+    def delete_friend(self, friend_id: UUID):
         friend_1 = self.db.query(Friends).get((self.user.id, friend_id))
         friend_2 = self.db.query(Friends).get((friend_id, self.user.id ))
         self.db.delete(friend_1)
         self.db.delete(friend_2)
-

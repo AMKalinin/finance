@@ -207,6 +207,17 @@ def update_description(
     return fin_app.update_transaction_description(transaction_info)
 
 
+@router.put("/{id}", response_model=transaction_out)
+def update_transaction(
+    *,
+    fin_app: Fin_app = Depends(deps.get_fin_service),
+    id: UUID,
+    transaction_info: transaction_in,
+):
+    """Полное обновление транзакции."""
+    return fin_app.update_transaction(id, transaction_info)
+
+
 @router.delete("/{id}", response_model=transaction_out)
 def delete_transaction(*, fin_app: Fin_app = Depends(deps.get_fin_service), id: UUID):
     return fin_app.delete_transaction(id)

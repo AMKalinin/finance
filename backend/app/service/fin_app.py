@@ -68,7 +68,7 @@ class Fin_app:
     @commit
     def create_account(self, account_info: account_in) -> Account:
         self.check_account_limit()
-        account_info.balance = 0
+        #account_info.balance = 0
         acc = self.crud.account.create_account(account_info)
         return acc
 
@@ -776,6 +776,11 @@ class Fin_app:
     @commit
     def update_transaction_description(self, transaction_info: transaction_in_description):
         return self.crud.transaction.update_description(transaction_info)
+
+    @commit
+    def update_transaction(self, id: UUID, transaction_info: transaction_in) -> Transaction:
+        """Полное обновление транзакции."""
+        return self.crud.transaction.update_transaction(id, transaction_info)
 
     @commit
     def delete_transaction(self, id: UUID) -> Transaction:

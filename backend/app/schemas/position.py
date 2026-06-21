@@ -5,12 +5,16 @@ from pydantic import BaseModel, Field, ConfigDict
 
 
 class position_split_in(BaseModel):
+    model_config = {'populate_by_name': True}
+
     user_id: UUID | None = Field(default=None, alias='userId')
     transaction_id: UUID | None = Field(default=None, alias='transactionId')
     quantity: int | None = Field(default=None)
 
 
 class position_in(BaseModel):
+    model_config = {'populate_by_name': True}
+
     name: str
     transaction_id: UUID | None = Field(default=None, alias='transactionId')
     price: float

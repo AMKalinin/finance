@@ -4,6 +4,8 @@ from pydantic import BaseModel, Field
 
 
 class distribution_in(BaseModel):
+    model_config = {'populate_by_name': True}
+
     user_id: UUID | None = Field(default=None, alias='userId')
     transaction_id: UUID | None = Field(default=None, alias='transactionId')
     role: Literal['owner', 'participant'] = Field(default='participant', alias='role')
@@ -24,5 +26,7 @@ class distribution_out(BaseModel):
 
 
 class distribution_settle_in(BaseModel):
+    model_config = {'populate_by_name': True}
+
     user_id: UUID = Field(alias='userId')
     transaction_id: UUID = Field(alias='transactionId')

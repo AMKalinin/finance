@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Silent Check SSO</title>
+</head>
+<body>
+<script>
+  // This file is used for silent SSO check with Keycloak
+  var parentOrigin = new URLSearchParams(window.location.search).get('origin');
+  
+  if (parentOrigin) {
+    window.parent.postMessage(window.location.href, parentOrigin);
+  } else {
+    // Demo mode - don't send message without origin
+    console.log('Silent check SSO in demo mode');
+  }
+</script>
+</body>
+</html>

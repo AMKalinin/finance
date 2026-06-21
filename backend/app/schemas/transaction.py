@@ -8,13 +8,15 @@ from .distribution import distribution_in, distribution_out
 
 
 class transaction_in(BaseModel):
+    model_config = {'populate_by_name': True}
+
     FROM: UUID | None = Field(default=None)
     TO: UUID | None = Field(default=None)
     category: UUID | None = Field(default=None)
     type: Literal['debit', 'adding', 'transfer'] | None = Field(default=None)
-    debit_size: float = Field(alias="debitSize")
-    credit_size: float | None = Field(default=None, alias="creditSize")
-    exchange_rate: float | None = Field(default=None, alias="exchangeRate")
+    debit_size: float | None = Field(alias="debitSize")
+    credit_size: float | None = Field(default=0.0, alias="creditSize")
+    exchange_rate: float | None = Field(default=0.0, alias="exchangeRate")
     date: datetime.date
     description: str | None
     split_type: Literal['equal', 'percentage', 'amount', 'position'] | None = Field(default=None, alias="splitType")

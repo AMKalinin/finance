@@ -22,7 +22,7 @@ class Account(Base):
     balance: Mapped[float] = mapped_column()
     name: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[str] = mapped_column(Text)
-    interest_rate: Mapped[float] = mapped_column()
+    interest_rate: Mapped[float] = mapped_column(nullable=True)
     is_emergency_fund: Mapped[bool] = mapped_column(default=False)
     decimal_places: Mapped[int] = mapped_column(default=2)
     is_archived: Mapped[bool] = mapped_column(default=False)

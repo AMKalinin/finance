@@ -14,7 +14,9 @@ from app.schemas.transaction import (
 
 class CRUD_transaction(CRUD_base):
 
-    def create_transaction(self, transaction_info: transaction_in) -> Transaction:
+    def create_transaction(self, transaction_info: transaction_in) -> Transaction: 
+        transaction_info.credit_size = 0
+        transaction_info.exchange_rate = 1
         db_transaction = Transaction(
             from_account_id=transaction_info.FROM,
             to_account_id=transaction_info.TO,
@@ -217,6 +219,37 @@ class CRUD_transaction(CRUD_base):
             return None
 
         db_transaction.description = transaction_info.description
+        return db_transaction
+
+    def update_transaction(self, id: UUID, transaction_info: transaction_in) -> Transaction:
+        """Полное обновление транзакции."""
+        db_transaction = self.db.query(Transaction).get(id)
+        if db_transaction is None:
+            return None
+
+        if transaction_info.FROM is not None:
+            db_transaction.from_account_id = transaction_info.FROM
+        if transaction_info.TO is not None:
+            db_transaction.to_account_id = transaction_info.TO
+        if transaction_info.category is not None:
+            db_transaction.category = transaction_info.category
+        if transaction_info.type is not None:
+            db_transaction.type = transaction_info.type
+        if transaction_info.debit_size is not None:
+            db_transaction.debit_size = transaction_info.debit_size
+        if transaction_info.credit_size is not None:
+            db_transaction.credit_size = transaction_info.credit_size
+        if transaction_info.exchange_rate is not None:
+            db_transaction.exchange_rate = transaction_info.exchange_rate
+        if transaction_info.date is not None:
+            db_transaction.date = transaction_info.date
+        if transaction_info.split_type is not None:
+            db_transaction.split_type = transaction_info.split_type
+        if transaction_info.status is not None:
+            db_transaction.status = transaction_info.status
+        if transaction_info.description is not None:
+            db_transaction.description = transaction_info.description
+
         return db_transaction
 
     def delete(self, id: UUID) -> Transaction:
