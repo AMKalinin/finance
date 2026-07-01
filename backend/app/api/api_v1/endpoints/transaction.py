@@ -166,6 +166,16 @@ def settle_distribution(
     return fin_app.transaction_settle_distribution(settle_info)
 
 
+@router.get("/{transaction_id}/distributions", response_model=List[distribution_out])
+def get_distributions(
+    *,
+    transaction_id: UUID,
+    fin_app: Fin_app = Depends(deps.get_fin_service),
+):
+    """Получить все распределения транзакции."""
+    return fin_app.get_transaction_distributions(transaction_id)
+
+
 @router.post("/position", response_model=position_out)
 def add_position(
     *, fin_app: Fin_app = Depends(deps.get_fin_service), position_info: position_in

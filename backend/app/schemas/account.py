@@ -16,13 +16,23 @@ class account_in(BaseModel):
     balance: float = 0
     description: str | None = None
     interest_rate: int | None = None
-    is_emergency_fund:bool = False
+    is_emergency_fund:bool = False 
     decimal_places:int = 2
     is_archived: bool = False
     is_primary: bool = False
     account_type: AccountType
 #    transaction_info: transaction_in
 
+class account_update_in(BaseAccountModel):
+    name: str | None = None
+    operation: str | None = None
+    balance: float | None = None
+    description: str | None = None
+    interest_rate: int | None = None
+    is_emergency_fund:bool | None = None
+    decimal_places:int | None = None
+    is_archived:bool | None = None
+    is_primary:bool | None = None
 
 class account_in_name(BaseAccountModel):
     name: str

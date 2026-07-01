@@ -27,6 +27,7 @@ from app.schemas.account import (
     account_in_decimal_places,
     account_in_emergency_fund,
     account_in_interest_rate,
+    account_update_in,
 )
 from app.schemas.category import category_in, category_in_name
 from app.schemas.position import position_in
@@ -93,6 +94,27 @@ class Fin_app:
         return self.crud.account.get_by_id(id)
 
     @commit
+    def update_account(self, account_info: account_update_in) -> Account | None:
+        acc = None
+        if account_info.balance != None:
+            acc = self.update_account_balance(account_info, commit_transaction=False)
+        if account_info.name != None:
+            acc = self.update_account_name(account_info, commit_transaction=False)
+        if account_info.description != None:
+            acc = self.update_account_description(account_info, commit_transaction=False)
+        if account_info.interest_rate != None:
+            acc = self.update_account_interest_rate(account_info, commit_transaction=False)
+        if account_info.is_emergency_fund != None:
+            acc = self.update_account_emergency_fund(account_info, commit_transaction=False)
+        if account_info.decimal_places != None:
+            acc = self.update_account_decimal_places(account_info, commit_transaction=False)
+        if account_info.is_archived != None:
+            acc = self.update_account_archived(account_info, commit_transaction=False)
+        if account_info.is_primary != None:
+            acc = self.update_account_primary(account_info, commit_transaction=False)
+        return acc
+
+    @commit
     def update_account_balance(self, account_info: account_in_balance) -> Account:
         return self.crud.account.update_balance(account_info)
 
@@ -122,7 +144,7 @@ class Fin_app:
 
     @commit
     def update_account_archived(self, account_info: account_in_archived) -> Account:
-        return self.crud.account.update_account_archived(account_info)
+        return self.crud.account.update_archived(account_info)
 
     @commit
     def update_account_primary(self, account_info: account_in_primary) -> Account:
@@ -849,6 +871,10 @@ class Fin_app:
     # ------------------------------------------------------------------ #
     #              Distribution operations                                #
     # ------------------------------------------------------------------ #
+
+    def get_transaction_distributions(self, transaction_id: UUID) -> list:
+        """Получить все распределения транзакции."""
+        return self.crud.distribution.get_distributions_for_transaction(transaction_id)
 
     @commit
     def transaction_add_distribution(self, distribution_info: distribution_in):
