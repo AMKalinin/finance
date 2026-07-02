@@ -17,6 +17,7 @@ from app.err.errors import (
 from app.models.account import Account
 from app.models.category import Category
 from app.models.transaction import Transaction
+from app.models.transaction_distribution_user import Transaction_distribution_user
 from app.schemas.account import (
     account_in,
     account_in_balance,
@@ -766,7 +767,34 @@ class Fin_app:
                 transaction_id, owner_id
             )
             owner_distr.size = round(owner_distr.size + remainder, 2)
+    
+    def recalculate_distribution(self, transaction: Transaction, new_distr:Transaction_distribution_user):
+        split_type = transaction.split_type
 
+        # Базовая сумма для распределения
+        base_amount = transaction.debit_size
+        all_distr = transaction.transaction_distribution_user + [new_distr]
+        if split_type == 'equal':
+                total_people = len(all_distr) 
+                share = round(base_amount / total_people, 2)
+
+        for distr in all_distr:
+            distr.size = share
+                # self.crud.distribution.update_distribution()
+                # self._distribute_equal(transaction.id, owner_id, participants, base_amount)
+            # elif split_type == 'percentage':
+            #     self._distribute_by_percentage(
+            #         transaction.id, owner_id, participants, base_amount
+            #     )
+            # elif split_type == 'position':
+            #     self._distribute_by_position(
+            #         transaction.id, owner_id, participants, transaction_info
+            #     )
+            # else:
+            #     # 'amount' или None — используются explicit размеры
+            #     self._distribute_by_amount(
+            #         transaction.id, owner_id, participants, base_amount
+            #     )
     # ------------------------------------------------------------------ #
     #              Transaction updates & delete                           #
     # ------------------------------------------------------------------ #
@@ -887,6 +915,7 @@ class Fin_app:
         self.crud.distribution.recalculate_transaction_status(
             distribution_info.transaction_id
         )
+        self.recalculate_distribution(transaction, result)
         return result
 
     @commit
