@@ -29,7 +29,8 @@ class CRUD_distribution(CRUD_base):
             transaction_id=distribution.transaction_id,
             distribution_user_role=distribution.role,
             size=distribution.size,
-            distribution_status='pending'
+            distribution_status='pending', 
+            percentage=distribution.percentage
         )
         self.db.add(db_distr)
         return db_distr

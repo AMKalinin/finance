@@ -777,10 +777,20 @@ class Fin_app:
         if split_type == 'equal':
                 total_people = len(all_distr) 
                 share = round(base_amount / total_people, 2)
-
+        elif split_type == 'percentage':
+            participant_total_pct = sum(
+                (p.percentage or 0) for p in participants if p.percentage
+            )
+            owner_pct = max(0, 1.0 - participant_total_pct)
         for distr in all_distr:
-            distr.size = share
-                # self.crud.distribution.update_distribution()
+            if split_type == 'equal':
+                distr.size = share
+            elif split_type == 'percentage':
+                if distr.distribution_user_role == 'owner':
+                    distr.size = round(base_amount * owner_pct, 2)
+                    distr.percentage = owner_pct
+                else:
+                    distr.size = round(base_amount * distr.percentage, 2)
                 # self._distribute_equal(transaction.id, owner_id, participants, base_amount)
             # elif split_type == 'percentage':
             #     self._distribute_by_percentage(

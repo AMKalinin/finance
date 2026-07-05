@@ -18,7 +18,8 @@ class distribution_out(BaseModel):
     transaction_id: UUID = Field(serialization_alias='transactionId')
     distribution_user_role: Literal['owner', 'participant'] = Field(serialization_alias='role')
     distribution_status: Literal['pending', 'settled'] = Field(serialization_alias='status')
-    size: float | None = Field(default=None)
+    size: float | None = Field(default=None) 
+    percentage: float | None = Field(default=None)
     is_deleted: bool = False
 
     class Config:
